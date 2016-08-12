@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>D3 prognos by pewi1399</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+   <body>
+ <!--  <section class="page-header">
+      <h1 class="project-name">Prognosenkät</h1>
+      <h2 class="project-tagline">Google forms & D3.js</h2>
+      <a href="https://docs.google.com/forms/d/1Lm3Q1tF5EbKEwSbAnBW-juvt_-blgXjMrCfo5TUfBWk/viewform" target="_blank" class="btn">Formulär</a>
+      <a href="https://github.com/pewi1399/D3_Prognos" class="btn">Se på GitHub</a>
+      <a href="https://github.com/pewi1399/D3_Prognos/zipball/master" class="btn"> Hämta .zip</a>
+    </section> -->
+     <!-- CSS (Styling) -->
+    <style type="text/css">
+            /* Format X and Y Axis */
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: grey;
+                shape-rendering: crispEdges;
+            }
+
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+			
+			.body {font-family:"Neo Sans fonts", Verdana, sans-serif}
+    </style>
+    <!-- End CSS (Styling) -->
+
+    <div id="data"></div>
+	
+    <!-- Load D3 from site -->
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+    <script type="text/javascript" src="src/tabletop.js"></script>
+	
+	<!--<h2>Lon/Pensionsprognos D3</h2>-->
+    <h3></h3>
+
+	
+	<script type="text/javascript">
+	
+
+	
+	
+	  window.onload = function() { init() };
+
+	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1fQqL97BZXb2PhC_lr9IQ0g9JPVM1An_4ee2T9ZI1MYc/pubhtml?gid=1047659107&single=true';
+	d3.select("h3").attr("align","center");
+	  
+	  function init() {
+		Tabletop.init( { key: public_spreadsheet_url,
+						 callback: showInfo,
+						 simpleSheet: true } )
+	  }
+
+	  function showInfo(data, tabletop) {
+	  
+			var numValues = data.length;
+			for(var i=0; i<numValues; i++) {
+				data[i].index = i // Add new numbers to array
+				data[i]["Pensionsprognos, pensionering vid 65"] = Number(data[i]["Pensionsprognos, pensionering vid 65"])
+				data[i]["Månadslön idag"] = Number(data[i]["Månadslön idag"]);;
+			};
+			
+			
+				var swe_SWE = {
+    "decimal": ",",
+        "thousands": " ",
+        "grouping": [3],
+        "currency": ["", " руб."],
+        "dateTime": "%A, %e %B %Y г. %X",
+        "date": "%d.%m.%Y",
+        "time": "%H:%M:%S",
+        "periods": ["AM", "PM"],
+        "days": ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
+        "shortDays": ["вс", "пн", "вт", "ср", "чт", "пт", "сб"],
+        "months": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+        "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+}
+	
+			
+			
+			var drawPadding = 10000;
+			var SWE = d3.locale(swe_SWE);
+			
+			var formatMonth = d3.utcParse("%d/%m/%Y %H:%M:%S");
+
+			
+			
+			// Setup settings for graphic
+            var canvas_width = 1000;
+            var canvas_height = 650;
+            var padding = 100;  // for chart edges
+			//var margin = {top: 30, right: 20, bottom: 70, left: 50},
+			//	width = 600 - margin.left - margin.right,
+			//	height = 270 - margin.top - margin.bottom;
+
+            // Create scale functions
+            var xScale = d3.scale.linear()  // xScale is width of graphic
+                            .domain([0, drawPadding + d3.max(data, function(d) {
+                                return d["Månadslön idag"];  // input domain
+                            })])
+                            .range([padding, canvas_width - padding * 2]); // output range
+
+            var yScale = d3.scale.linear()  // yScale is height of graphic
+                            .domain([0, drawPadding + d3.max(data, function(d) {
+                                return d["Pensionsprognos, pensionering vid 65"];  // input domain
+                            })])
+                            .range([canvas_height - padding, padding]);  // remember y starts on top going down so we flip
+
+            // Define X axis
+            var xAxis = d3.svg.axis()
+                            .scale(xScale)
+                            .orient("bottom")
+                            .ticks(10)
+							.tickFormat(SWE.numberFormat(",d"));
+
+            // Define Y axis
+            var yAxis = d3.svg.axis()
+                            .scale(yScale)
+                            .orient("left")
+                            .ticks(10)
+							.tickFormat(SWE.numberFormat(",d"));;		
+
+
+			// Create SVG element
+            var svg = d3.select("h3")  // This is where we put our vis
+                .append("svg")
+                .attr("class", "lineplot")
+                .attr("width", canvas_width)
+                .attr("height", canvas_height)
+				
+								
+			var xmax  =  d3.max(data, function(d) {
+                        return d["Månadslön idag"]; }) + drawPadding;
+						
+			var ymax  =  d3.max(data, function(d) {
+                        return d["Pensionsprognos, pensionering vid 65"]; }) + drawPadding;
+						
+			var degreeBreakpoint = Math.atan(ymax/xmax)*180/Math.PI
+
+			
+
+			var degreeLines = [Math.atan(1)*180/Math.PI, Math.atan(6/10)*180/Math.PI]
+			var colors = ["darkslategrey" , "darkslategrey", "darkslategrey", "darkslategrey"]
+			
+			function getRandomInt(min, max) {
+						return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
+		
+		//	var dashes = ["(3,3)", "(1,1)", "(10,3)"]
+		
+				svg.selectAll("line")
+					.data(degreeLines)
+					.enter()
+					.append("line")
+					.style("stroke", function(d,i){ return colors[i];})  // colour the line
+					.style("stroke-dasharray", function(d,i){ return (i*3,i*3);})
+					.attr("class", "GGX")
+					.attr("x1", xScale(0))     // x position of the first end of the line
+					.attr("y1", yScale(0))      // y position of the first end of the line
+					.attr("x2",  function(d) {
+					if(d < degreeBreakpoint){
+						var x = xScale(xmax);
+					} else {
+						var x =  xScale(ymax*(1/Math.tan(d*Math.PI/180))) ;
+					}
+					return x;
+					})     // x position of the second end of the line
+					.attr("y2", function(d) {
+					if(d < degreeBreakpoint){
+						var x = yScale(d3.min([Math.tan(d*Math.PI/180)*xmax,ymax]));
+					} else {
+						var x =  yScale(ymax);
+					}
+					return x;
+					})
+					.attr("stroke-width", function(d) {
+					if(d == 45){
+						var w = 1;
+					} else {
+						var w =  1;
+					}
+					return w;
+					});
+	
+	
+        var width = 660;
+        var height = 10;
+        var radius = Math.min(width, height) / 2;
+        var donutWidth = 200;
+        var legendRectSize = 13;                                  // NEW
+        var legendSpacing = 6;   				
+  
+
+            // Create Circles
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")  // Add circle svg
+				.attr("class", "pointz")
+                .attr("cx", function(d) {
+					//d["x_last"] = xScale(d["x"]);
+                    return xScale(d["Månadslön idag"]);  // Circle's X
+                })
+                .attr("cy", function(d) {  // Circle's Y
+					//d["x_new"] =xScale(d["y"]);
+                    return yScale(d["Pensionsprognos, pensionering vid 65"]);
+                })
+                .attr("r", 4) // radius
+		.attr("fill", "none")
+                .style("stroke", function(d){
+                  if(d["Kön"] == "Kvinna"){
+                    return "firebrick";
+                  }else{
+                    return "dodgerblue";
+                  }})
+		.style("stroke-width", 1.5); //color 
+
+				  
+				  
+				var maxIndex = d3.max(data, function(d) {
+					return d["index"];  // input domain
+				});
+				
+
+		d3.selection.prototype.last = function() {
+		  var last = this.size() - 1;
+		  return d3.select(this[0][last]);
+		};
+				  
+	function transitions(){
+				  return  svg.selectAll(".pointz").last()
+					  	.style("fill", "white")
+						.transition()
+						.duration(800)
+					       .style("stroke-width", 1)	
+						 .style("stroke", function(d){
+                  if(d["Kön"] == "Kvinna"){
+                    return "firebrick";
+                  }else{
+                    return "dodgerblue";
+                  }})
+						.style("r", 3.5)
+						.transition()
+						.duration(800)
+						.style("r", 6)
+						.style("stroke", "orange")
+					       	.style("stroke-width", 6)
+						.style("fill", "orange")	
+						.each("end", transitions);
+				};
+
+				// get time 
+				var d = new Date();
+				
+				var lastTime = d3.time.hour.offset( formatMonth(data[data.length-1].Timestamp), -2 )
+				
+			if((d-lastTime) < 30000){				
+						transitions();
+			 }
+				  
+				  
+            // Add to X axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (canvas_height - padding) +")")
+                .call(xAxis);
+
+            // Add to Y axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + padding +",0)")
+                .call(yAxis);
+				
+			svg.append("text")
+				.attr("class", "x label")
+				.attr("style", "font-family:Verdana")
+				.attr("text-anchor", "end")
+				.attr("x", canvas_width/2)
+				.attr("y", canvas_height - 50)
+				.style("font-size", "15px")
+				.style("fill", "grey")
+				.text("Månadslön idag, kr");
+				
+			svg.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "end")
+				.attr("style", "font-family:Verdana")
+				.attr("y", 20)
+				.attr("x", -(canvas_height-padding)/4)
+				.attr("dy", ".75em")
+				.attr("transform", "rotate(-90)")
+				.style("font-size", "15px")
+				.style("fill", "grey")
+				.text("Pensionsprognos, pensionering vid 65 år, kr");
+				
+
+                            
+            var w = 130,
+                h = 250,
+                radius = Math.min(w, h) / 2;
+
+            var arc = d3.svg.arc()
+                .outerRadius(radius - 7)
+                .innerRadius(radius - 35);
+
+            var pie = d3.layout.pie()
+                .value(function(d) { return d.population; })
+				.sort(null);
+				
+            
+            var males = d3.sum(data, function(d){ return d.Kön =="Man";});
+            var females = d3.sum(data, function(d){ return d.Kön == "Kvinna" ;});
+            
+            var pieData = [{age:"\u2642", population:males},{age:"\u2640", population:females}]
+            var color =["dodgerblue", "firebrick"]
+	
+			
+	var pathz = svg.datum(pieData).selectAll(".arcz") //slice_group
+			  .data(pie)
+				.enter().append("g");
+				
+	var slice_path = pathz.append("path")
+				.style("fill", function(d, i) { return color[i]; })
+				.attr("opacity", 0.7)
+				.transition().duration(1000) //slice_path
+			   .attrTween('d', function(d) {
+       var i = d3.interpolate(d.startAngle+0.1, d.endAngle);
+       return function(t) {
+           d.endAngle = i(t);
+         return arc(d);
+       }
+  })
+			  .each(function(d) { this._current = d; }); // store the initial angles
+			  
+	// Make group to hold labels
+	var label_group = pathz.append("g")
+	  .attr("transform", function(d) {
+		//console.log(d)
+		var c = arc.centroid(d);
+		return "translate(" + c[0] +"," + c[1] + ")";
+	  })
+
+	var line_1 = label_group.append("text") // First line
+	  //.text(function(d) { return d.data.series; })
+	   .text(function(d) { return d.data.age;})
+	  //.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+	  .attr("text-anchor", "middle")
+	  .attr("dy", ".35em")
+	  .attr("dx", "-.0em")
+	  .attr("fill", "white")
+	  .attr("style", "font-family:Verdana");
+
+				  
+     var legendRectSize = 0;                                  // NEW
+     var legendSpacing = -15;                                    // NEW
+     
+     var text = [females +"|"+ males]             
+                  
+     var percentage = pathz.selectAll('.percent')                     // NEW
+          .data(text)                                   // NEW
+          .enter()                                                // NEW
+          .append('g')                                            // NEW
+          .attr('class', 'percent')
+          .attr('transform', function(d, i) {
+            var height = legendRectSize + legendSpacing;
+            var offset =  height * color.length / 2;
+            var horz = -2 * legendRectSize;
+            var vert = 19;
+            return 'translate(' + horz + ',' + vert + ')';
+          });
+          
+        percentage.append('text')
+          .attr('x', legendRectSize + legendSpacing+15)
+          .attr('y', legendRectSize + legendSpacing+2)
+          .attr("style", "font-family:Verdana")
+          .style("font-size", "17px")
+          .style("fill","black")
+          .text(function(d) { return d; })
+          .style("text-anchor", "middle")
+          .attr("id", "mainLabel");
+
+		 pathz.attr('transform', 'translate('+(canvas_width-padding)+', '+(canvas_height-padding)+')');
+		 //slice_path.attr('transform', 'translate('+(canvas_width-padding)+', '+(canvas_height-padding)+')');
+		
+		// try to make it reactive by binding data				 
+		var textContainer  = svg.selectAll("boundText")
+			.data(degreeLines)
+			.enter()
+			.append("text");
+			
+		textContainer
+					 //.text("hh")
+					 .attr("x",  function(d) {
+					if(d < degreeBreakpoint){
+						var x = xScale(xmax) + 5;
+					} else {
+						var x =  xScale(ymax*(1/Math.tan(d*Math.PI/180)))+5;
+					}
+					return x;
+					})     // x position of the second end of the line
+					.attr("y", function(d) {
+					if(d < degreeBreakpoint){
+						var x = yScale(d3.min([Math.tan(d*Math.PI/180)*xmax,ymax]));
+					} else {
+						var x =  yScale(ymax);
+					}
+					return x;
+					})
+					 .text(function(d) { return Math.round(Math.tan(d*Math.PI/180)*100)+ "%"; })
+					 .attr("font-family", "sans-serif")
+					 .attr("font-size", "15px");		
+  			  
+			  
+
+
+            function type(d) {
+              d.population = +d.population;
+              return d;
+            }                
+
+				
+		};		
+		
+	</script>
+
+
+
+
+  </body>
+</html>
