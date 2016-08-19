@@ -70,3 +70,5 @@ d3.selectAll(".barlabels")
 	  
 };
 
+// refresh bar every 10 seconds
+setInterval(update, 10000);
