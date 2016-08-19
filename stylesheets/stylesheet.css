@@ -366,6 +366,9 @@ footer a:hover {
   }
 }
 
+
+/* #reactive containers
+================================================== */
 .svg-container {
     display: inline-block;
     position: relative;
@@ -380,6 +383,19 @@ footer a:hover {
     top: 10px;
     left: 10px;
 }
+
+/* #page 2
+================================================== */
+
+.cells path {
+  fill: none;
+  pointer-events: all;
+}
+
+.cells :hover circle {
+  fill: fuchsia;
+}
+
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 @media only screen and (min-width: 480px) and (max-width: 767px) { }

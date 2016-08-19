@@ -32,8 +32,9 @@
 
         <section id="main_content">
     <!-- Load D3 from site -->
-    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+	
+	<!--<svg width="960" height="200"></svg>-->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript" src="src/tabletop.js"></script>
 
 	
@@ -50,26 +51,70 @@ Suspendisse cursus fermentum quam vitae semper. Mauris convallis dui et leo blan
 non nulla egestas, iaculis nulla a, suscipit urna. Suspendisse potenti. Cum sociis natoque penatibus et magnis dis parturient 
 montes, nascetur ridiculus mus. Proin tempor quis dolor nec tempus.	
 
-<svg width="960" height="200"></svg>
+
 <script>
+//var margin = {top: 40, right: 40, bottom: 40, left: 40},
+    //width = svg.attr("width") - margin.left - margin.right,
+    //height = svg.attr("height") - margin.top - margin.bottom;
+//	width = 960 - margin.left - margin.right,
+//    height = 300 - margin.top - margin.bottom;
+window.onload = function() { init() };
 
-var data = {id:["ett","tva","tre"], value:[1,2,1000]}
+	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
+	d3.select("h3").attr("align","center");
+	  
+	  function init() {
+		Tabletop.init( { key: public_spreadsheet_url,
+						 callback: showInfo,
+						 simpleSheet: true } )
+	  }
 
-var svg = d3.select("svg"),
-    margin = {top: 40, right: 40, bottom: 40, left: 40},
-    width = svg.attr("width") - margin.left - margin.right,
-    height = svg.attr("height") - margin.top - margin.bottom;
+function showInfo(data, tabletop) {
+
+		var margin = {top: 20, right: 100, bottom: 30, left: 100},
+			width = 960 - margin.left - margin.right,
+			height = 150 - margin.top - margin.bottom;
+
+	
+var svg = d3.select("h3")
+			.append("div")
+			.attr("id","testname")
+			.classed("svg-container", true)
+			.append("svg")
+			//.attr("width", width + margin.left + margin.right)
+			//.attr("height", height + margin.top + margin.bottom)
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr("viewBox","0 0 " + (width+50)  + " " + height)
+			//class to make it responsive
+			.classed("svg-content-responsive", true)
+		  .append("g");
+		  
+
 
 var formatValue = d3.format(",d");
 
-var x = d3.scaleLog()
+//var x = d3.scaleLog()
+var x = d3.scaleLinear()
     .rangeRound([0, width]);
 
-var g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var g = svg.append("g");
+    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var newdata = []
+
+for(var i = 0; i < data.length; i++){
+	newdata.push({id:data[i]["X3"], value: Number(data[i]["Vilken är din längd i centimeter?"])});
+}
+	
 //d3.csv("flare.csv", type, function(error, data) {
 //  if (error) throw error;
+//var data = [
+//				{id:"ett", value: 1},
+//				{id:"tva", value: 2},
+//				{id:"tre", value:1000}
+//				]
+
+var data = newdata
 
   x.domain(d3.extent(data, function(d) { return d.value; }));
 
@@ -83,7 +128,7 @@ var g = svg.append("g")
 
   g.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + height *0.80 + ")")
       .call(d3.axisBottom(x).ticks(20, ".0s"));
 
   var cell = g.append("g")
@@ -99,6 +144,7 @@ var g = svg.append("g")
       .attr("cx", function(d) { return d.data.x; })
       .attr("cy", function(d) { return d.data.y; });
 
+// append blocks fit to voronoi tesselation grid for smoother hover mechanics
   cell.append("path")
       .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 
@@ -112,6 +158,8 @@ function type(d) {
   return d;
 }
 
+
+		};	
 </script>
 
         </section>

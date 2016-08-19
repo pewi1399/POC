@@ -1,0 +1,3 @@
+
+# print json as string
+JSON.stringify(obj);
