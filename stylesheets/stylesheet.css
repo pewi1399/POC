@@ -369,7 +369,8 @@ footer a:hover {
 
 /* #reactive containers
 ================================================== */
-.svg-container {
+/*page 1 */
+.svg-container1 {
     display: inline-block;
     position: relative;
     width: 100%;
@@ -377,6 +378,16 @@ footer a:hover {
     vertical-align: top;
     overflow: hidden;
 }
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 60%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+
 .svg-content-responsive {
     display: inline-block;
     position: absolute;
