@@ -24,7 +24,7 @@ var svg = d3.select("h3")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
 			.attr("preserveAspectRatio", "xMidYMid meet")
-			.attr("viewBox","-30 -30 " + (width+50)  + " " + (height+50)) //Make the viewbox a tiny bit bigger than svg
+			.attr("viewBox","-40 -30 " + (width+50)  + " " + (height+50)) //Make the viewbox a tiny bit bigger than svg
 			//class to make it responsive
 			.classed("svg-content-responsive", true)
 		  .append("g");
@@ -47,7 +47,25 @@ var line = d3.line()
     .y(function(d) { return y(Number(d.Y1)); })
 	.curve(d3.curveLinear);
 	//.curve(d3.curveCatmullRomOpen.alpha(0.001));
-    
+
+// ---------------------------- prepare for multiline -------------------------------------- 
+
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+//color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+color.domain(["Y1", "Y3"])
+
+  var lineData = color.domain().map(function(name) {
+    return {
+      name: name,
+      values: data.map(function(d) {
+        return {Timestamp: d.Timestamp, Y1: +d[name]};
+      })
+    };
+  });
+   
+// ------------------------------ end multiline prep --------------------------------------- 
+   
 var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -55,7 +73,7 @@ var g = svg.append("g");
   x.domain(d3.extent(data, function(d) { return formatTime(d.Timestamp); }));
 
   //x.domain([0,600]);
-  y.domain([0, 500]);
+  y.domain([0, 2000]);
   
   
     g.append("g")
@@ -75,10 +93,21 @@ var g = svg.append("g");
       .text("Antal");
 
 // add line	  
-svg.append("path")
-      .datum(data)
+//svg.append("path")
+//      .datum(data)
+//      .attr("class", "line")
+//      .attr("d", line);
+
+//add lines
+  var lines = svg.selectAll(".lines")
+      .data(lineData)
+    .enter().append("g")
+      .attr("class", "lines");
+
+  lines.append("path")
       .attr("class", "line")
-      .attr("d", line);
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.name); });
       
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)
