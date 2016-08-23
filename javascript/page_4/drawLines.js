@@ -29,12 +29,12 @@ var svg = d3.select("h3")
 			.classed("svg-content-responsive", true)
 		  .append("g");
 		  
-
+var formatTime = d3.utcParse("%d/%m/%Y %H:%M:%S");
 
 var formatValue = d3.format(",d");
 
 //var x = d3.scaleLog()
-var x = d3.scaleLinear()
+var x = d3.scaleTime()
     .range([0, width]);
 
 //var x = d3.scaleLog()
@@ -43,18 +43,18 @@ var y = d3.scaleLinear()
 	
 //  define line drawing function	
 var line = d3.line()
-    .x(function(d) { return x(Number(d.X1)); })
+    .x(function(d) { return x(formatTime(d.Timestamp)); })
     .y(function(d) { return y(Number(d.Y1)); })
 	.curve(d3.curveLinear);
-	//curve(d3.curveCatmullRomOpen.alpha(0.001));
+	//.curve(d3.curveCatmullRomOpen.alpha(0.001));
     
 var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
-  //y.domain(d3.extent(data, function(d) { return Number(d.Y1); }));
+  x.domain(d3.extent(data, function(d) { return formatTime(d.Timestamp); }));
 
-  x.domain([0,600]);
+  //x.domain([0,600]);
   y.domain([0, 500]);
   
   
@@ -72,13 +72,7 @@ var g = svg.append("g");
       .attr("y", 6)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text("Temperature, ºF");
-
-  var point = g.selectAll(".points")
-    .data(data)
-    .enter().append("g")
-      .attr("class", "points");
-
+      .text("Antal");
 
 // add line	  
 svg.append("path")
