@@ -23,7 +23,7 @@ var svg = d3.select("h3")
 			.append("svg")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
-			.attr("preserveAspectRatio", "xMinYMid meet")
+			.attr("preserveAspectRatio", "xMidYMid meet")
 			.attr("viewBox","-30 -30 " + (width+50)  + " " + (height+50)) //Make the viewbox a tiny bit bigger than svg
 			//class to make it responsive
 			.classed("svg-content-responsive", true)
@@ -40,6 +40,13 @@ var x = d3.scaleLinear()
 //var x = d3.scaleLog()
 var y = d3.scaleLinear()
     .range([height, 0]);
+	
+//  define line drawing function	
+var line = d3.line()
+    .x(function(d) { return x(Number(d.X1)); })
+    .y(function(d) { return y(Number(d.Y1)); })
+	.curve(d3.curveLinear);
+	//curve(d3.curveCatmullRomOpen.alpha(0.001));
     
 var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -72,12 +79,12 @@ var g = svg.append("g");
     .enter().append("g")
       .attr("class", "points");
 
-  point.append("circle")
-      .attr("class", "circles")
-      .attr("r", 3.6)
-      .attr("cx", function(d) { return x(Number(d.X1)); })
-      .attr("cy", function(d) { return x(Number(d.Y1)); })
-      .attr("fill", "red");
+
+// add line	  
+svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
       
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)
