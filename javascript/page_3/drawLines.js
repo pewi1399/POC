@@ -11,7 +11,7 @@ window.onload = function() { init() };
 
 function showInfo(data, tabletop) {
 
-		var margin = {top: 20, right: 100, bottom: 30, left: 100},
+		var margin = {top: 20, right: 100, bottom: 30, left: 300},
 			width = 960 - margin.left - margin.right,
 			height = 550- margin.top - margin.bottom;
 
@@ -24,7 +24,7 @@ var svg = d3.select("h3")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
 			.attr("preserveAspectRatio", "xMinYMid meet")
-			.attr("viewBox","0 0 " + (width+50)  + " " + height)
+			.attr("viewBox","-30 -30 " + (width+50)  + " " + (height+50)) //Make the viewbox a tiny bit bigger than svg
 			//class to make it responsive
 			.classed("svg-content-responsive", true)
 		  .append("g");
@@ -44,9 +44,13 @@ var y = d3.scaleLinear()
 var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
-  y.domain(d3.extent(data, function(d) { return Number(d.Y1); }));
+  //x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
+  //y.domain(d3.extent(data, function(d) { return Number(d.Y1); }));
 
+  x.domain([0,600]);
+  y.domain([0, 500]);
+  
+  
     g.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + (height/1.5) + ")")

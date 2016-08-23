@@ -19,7 +19,7 @@ function showInfo(data, tabletop) {
 var svg = d3.select("h3")
 			.append("div")
 			.attr("id","testname")
-			.classed("svg-container", true)
+			.classed("svg-container1", true)
 			.append("svg")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
