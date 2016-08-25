@@ -168,12 +168,19 @@ var allButtons= svg.append("g")
                     .attr("id","allButtons") 
 
 //fontawesome button labels
-var labels= ['\uf0a4','\uf25b','\uf0a5'];
+var labels= ['Hog','Mellan','Lag'];
 
 //colors for different button states 
             var defaultColor= "#FFA500"
             var hoverColor= "#FF6347"
             var pressedColor= "#FF4500"
+			
+			
+			var bWidth= 9; //button width
+            var bHeight= 9; //button height
+            var bSpace= 2; //space between buttons
+            var x0= width - 150; //x offset
+            var y0= 10; //y offset
 
             //groups for each button (which will hold a rect and text)
             var buttonGroups= allButtons.selectAll("g.button")
@@ -201,11 +208,6 @@ var labels= ['\uf0a4','\uf25b','\uf0a5'];
                                         }
                                     })
 
-            var bWidth= 30; //button width
-            var bHeight= 20; //button height
-            var bSpace= 7; //space between buttons
-            var x0= width -120; //x offset
-            var y0= 10; //y offset
 
             //adding a rect to each toggle button group
             //rx and ry give the rect rounded corner
@@ -213,10 +215,12 @@ var labels= ['\uf0a4','\uf25b','\uf0a5'];
                         .attr("class","buttonRect")
                         .attr("width",bWidth)
                         .attr("height",bHeight)
-                        .attr("x",function(d,i) {return x0+(bWidth+bSpace)*i;})
-                        .attr("y",y0)
-                        .attr("rx",5) //rx and ry give the buttons rounded corners
-                        .attr("ry",5)
+                        //.attr("x",function(d,i) {return x0+(bWidth+bSpace)*i;})
+                        //.attr("y",y0)
+						.attr("x", x0)
+                        .attr("y", function(d,i) {return y0+(bHeight+bSpace)*i;})
+                        .attr("rx",10) //rx and ry give the buttons rounded corners
+                        .attr("ry",10)
                         .attr("fill",defaultColor)
 
             //adding text to each toggle button group, centered 
@@ -224,13 +228,15 @@ var labels= ['\uf0a4','\uf25b','\uf0a5'];
             buttonGroups.append("text")
                         .attr("class","buttonText")
                         .attr("font-family","FontAwesome")
-                        .attr("x",function(d,i) {
-                            return x0 + (bWidth+bSpace)*i + bWidth/2;
-                        })
-                        .attr("y",y0+bHeight/2)
-                        .attr("text-anchor","middle")
+                        //.attr("x",function(d,i) {
+                        //    return x0 + (bWidth+bSpace)*i + bWidth/2;
+                        //})
+                        //.attr("y",y0+bHeight/2)
+						.attr("x", x0 + bWidth)
+                        .attr("y", function(d,i) {return y0+(bHeight+bSpace)*i + bHeight/2;})
+                        .attr("text-anchor","left")
                         .attr("dominant-baseline","central")
-                        .attr("fill","white")
+                        .attr("fill","grey")
                         .text(function(d) {return d;})
 
             function updateButtonColors(button, parent) {
@@ -240,6 +246,12 @@ var labels= ['\uf0a4','\uf25b','\uf0a5'];
                 button.select("rect")
                         .attr("fill",pressedColor)
             }
+			
+			// ger f?rg f?r f?rsta elementet (h?g)
+			// d3.select(".buttonRect").attr("fill")
+			
+			// ger f?rg f?r alla knappar
+			//d3.selectAll(".buttonRect").attr("fill")
 	// -----------------------------------------------------------------------------------------
 	
 	
