@@ -407,7 +407,6 @@ footer a:hover {
   fill: fuchsia;
 }
 
-
 /* #page 4
 ================================================== */
 
@@ -416,6 +415,24 @@ footer a:hover {
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+
+/* #dropdown menu styling */
+select {
+   margin: 20px;
+    border: 1px solid #111;
+   background: transparent;
+   width: 150px;
+   padding: 5px 5px 5px 5px;
+   font-size: 12px;
+   border: 1px solid #ccc;
+   height: 30px;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+    background: url(https://beta.pensionsmyndigheten.se/etc/clientlibs/pm-mainsite/images/pm-pyramid-application.ceda40c1c10a323fb866182383f4c752.svg) 96% / 15% no-repeat #eee;
+} 
+
+
 
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
