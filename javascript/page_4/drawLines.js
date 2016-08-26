@@ -10,49 +10,11 @@ window.onload = function() { init() };
 	  }
 
 function showInfo(data, tabletop) {
-	
-	
-// -------------------------- figure out how to change data ------------------
-var dispatch = d3.dispatch("load", "statechange");
 
-		  // start fidgeting about with some fun data
-  var selector = d3.select("#dropList")
-    .append("div")
-    .append("select")
-	 .attr('class','select')
-    .on('change',onchange)
-
-  selector.selectAll("option")
-      .data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
-    .enter().append("option")
-	.attr("class", "dropdown")
-      .attr("value", function(d) { return d; })
-      .text(function(d) { return d; });
-	  
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
 			width = 960 - margin.left - margin.right,
-			height = 550- margin.top - margin.bottom;
-
-// A drop-down menu for selecting a state; uses the "menu" namespace.
-//dispatch.on("load.menu", function(stateById) {
-//  var selector = d3.select("#dropList")
-   // .append("div")
-    //.append("select")
-      //.on("change", function() { dispatch.statechange(stateById.get(this.value)); });
-
-  //selector.selectAll("option")
-    //  .data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
-    //.enter().append("option")
-      //.attr("value", function(d) { return d; })
-      //.text(function(d) { return d; });
-
-  //dispatch.on("statechange.menu", function(state) {
-    //select.property("value", state.id);
-  //});
-//});
-
-
-// --------------------------------------------------------------------------------
+			height = 550- margin.top - margin.bottom;	
+	
 	
 var svg = d3.select("h3")
 			.append("div")
@@ -86,12 +48,77 @@ var line = d3.line()
 	.curve(d3.curveLinear);
 	//.curve(d3.curveCatmullRomOpen.alpha(0.001));
 
+// -------------------- button defs --------------------------------------------
+	//container for all buttons
+var allButtons= svg.append("g")
+                    .attr("id","allButtons") 
+
+//fontawesome button labels
+var labels = ['X1','Y1','Y3'];
+
+//colors for different button states 
+            var defaultColor= "#FFA500"
+            var hoverColor= "#FF6347"
+            var pressedColor= "#FF4500"
+			
+			
+			var bWidth= 9; //button width
+            var bHeight= 9; //button height
+            var bSpace= 2; //space between buttons
+            var x0= width - 150; //x offset
+            var y0= 10; //y offset
+// ------------------------- end button defs -----------------------------------
+
+// -------------------------- figure out how to change data --------------------
+var dispatch = d3.dispatch("load", "statechange");
+
+		  // start fidgeting about with some fun data
+  var selector = d3.select("#dropList")
+    .append("div")
+    .append("select")
+	 .attr('class','select')
+    .on('change',onchange)
+
+  selector.selectAll("option")
+      //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
+    .data(labels)
+    .enter().append("option")
+	.attr("class", "dropdown")
+      .attr("value", function(d) { return d; })
+      .text(function(d) { return d; });
+	  
+
+
+// A drop-down menu for selecting a state; uses the "menu" namespace.
+//dispatch.on("load.menu", function(stateById) {
+//  var selector = d3.select("#dropList")
+   // .append("div")
+    //.append("select")
+      //.on("change", function() { dispatch.statechange(stateById.get(this.value)); });
+
+  //selector.selectAll("option")
+    //  .data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
+    //.enter().append("option")
+      //.attr("value", function(d) { return d; })
+      //.text(function(d) { return d; });
+
+  //dispatch.on("statechange.menu", function(state) {
+    //select.property("value", state.id);
+  //});
+//});
+
+
+
+
+// -----------------------------------------------------------------------------
+
+
 // ---------------------------- prepare for multiline -------------------------------------- 
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-color.domain(["Y1"])
+color.domain(labels)
 
 
 
@@ -163,24 +190,7 @@ var g = svg.append("g");
 	
 	// -----------------------------------------------------------------------------------------	
 	
-	//container for all buttons
-var allButtons= svg.append("g")
-                    .attr("id","allButtons") 
 
-//fontawesome button labels
-var labels= ['Hog','Mellan','Lag'];
-
-//colors for different button states 
-            var defaultColor= "#FFA500"
-            var hoverColor= "#FF6347"
-            var pressedColor= "#FF4500"
-			
-			
-			var bWidth= 9; //button width
-            var bHeight= 9; //button height
-            var bSpace= 2; //space between buttons
-            var x0= width - 150; //x offset
-            var y0= 10; //y offset
 
             //groups for each button (which will hold a rect and text)
             var buttonGroups= allButtons.selectAll("g.button")
@@ -275,15 +285,38 @@ function onchange() {
     };
   });
   
+  //dölj
   d3.selectAll(".line")
-  .data(lineData)
   .transition()
-  .duration(1000)
-  .attr("d", function(d) { return line(d.values); })
-  .style("stroke", function(d) { return color(d.name); });
+  .duration(500)
+  .style("opacity", function(d){
+      if(d.name == selectValue){
+        return 1;
+    } else {
+        return 0;
+    }
+  }
+  );
+  
+  
+  // remove lines might be useful in a later step
+  //var newLines = d3.selectAll(".line")
+  //.data(lineData);
+  
+  //newLines
+  //  .exit()
+  //  .remove()
+  
+  
+  //newLines
+  //.transition()
+  //.duration(1000)
+  //.attr("d", function(d) { return line(d.values); })
+  //.style("stroke", function(d) { return color(d.name); });
    
    
 };
+
 
 
       //clue
