@@ -13,6 +13,7 @@ function showInfo(data, tabletop) {
 // global var for full set of filtering options
 window.lineSet = ["X1", "Y1","Y3"]
 window.drawSet = lineSet
+window.globalSex = "Man"
 
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
@@ -58,7 +59,7 @@ var allButtons= svg.append("g")
                     .attr("id","allButtons") 
 
 //fontawesome button labels
-var labels = ['X1','Y1','Y3'];
+var labels = ['Man', 'Kvinna'];
 
 //colors for different button states 
             var defaultColor= "#FFA500"
@@ -81,7 +82,12 @@ var dispatch = d3.dispatch("load", "statechange");
     .append("div")
     .append("select")
 	 .attr('class','select')
-    .on('change',function(){ onchange(d3.select('select').property('value')) })
+    .on('change',function(){ 
+    
+        window.globalSex = d3.select('select').property('value')
+        onchange() 
+        }
+    )
 
   selector.selectAll("option")
       //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
@@ -122,7 +128,7 @@ var dispatch = d3.dispatch("load", "statechange");
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-color.domain(labels)
+color.domain(lineSet)
 
 
 
@@ -199,7 +205,7 @@ var g = svg.append("g");
 
             //groups for each button (which will hold a rect and text)
             var buttonGroups= allButtons.selectAll("g.button")
-                                    .data(labels)
+                                    .data(lineSet)
                                     .enter()
                                     .append("g")
                                     .attr("class","button")
@@ -260,8 +266,10 @@ var g = svg.append("g");
 
                 button.select("rect")
                         .attr("fill",pressedColor)
-                        
-                 onchange(button.data()[0])
+                  
+                 window.drawSet = lineSet.filter(function(d){ return d != button.data()[0]; })
+                  
+                 onchange()
             }
 			
 			// ger f?rg f?r f?rsta elementet (h?g)
@@ -274,42 +282,27 @@ var g = svg.append("g");
 	
 	
 
-function onchange(selectValue) {
+function onchange() {
 	//selectValue = d3.select('select').property('value')
 
-	d3.select("#labeltext").text(selectValue)
-	
-	var labels = drawSet;
+	//d3.select("#labeltext").text(selectValue)
 	
 	//color.domain(labels.filter(function(d){ return d != selectValue; }))
 
-    window.drawSet = lineSet.filter(function(d){ return d != selectValue; })
+    //window.drawSet = lineSet.filter(function(d){ return d != selectValue; })
 
 
   var lineData = drawSet.map(function(name) {
     return {
       name: name,
-      values: data.map(function(d) {
+      values: data.filter(function(d) { return d.X3 == globalSex }).map(function(d) {
         return {Timestamp: d.Timestamp, Y1: +d[name]};
       })
     };
   });
   
-  //dölj
-  d3.selectAll(".line")
-  .transition()
-  .duration(500)
-  .style("opacity", function(d){
-      if(d.name == selectValue){
-        return 1;
-    } else {
-        return 1;
-    }
-  }
-  );
   
-  
-  // remove lines might be useful in a later step
+  // remove lines not needed
   var newLines = d3.selectAll(".line")
   .data(lineData);
   
