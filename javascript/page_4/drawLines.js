@@ -10,6 +10,10 @@ window.onload = function() { init() };
 	  }
 
 function showInfo(data, tabletop) {
+// global var for full set of filtering options
+window.lineSet = ["X1", "Y1","Y3"]
+window.drawSet = lineSet
+
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
 			width = 960 - margin.left - margin.right,
@@ -77,7 +81,7 @@ var dispatch = d3.dispatch("load", "statechange");
     .append("div")
     .append("select")
 	 .attr('class','select')
-    .on('change',onchange)
+    .on('change',function(){ onchange(d3.select('select').property('value')) })
 
   selector.selectAll("option")
       //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
@@ -174,6 +178,7 @@ var g = svg.append("g");
   lines.append("path")
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
+      .attr("id", function(d) { return d.name + "_line";})
       .style("stroke", function(d) { return color(d.name); });
  
 //var select = d3.select('body')
@@ -255,6 +260,8 @@ var g = svg.append("g");
 
                 button.select("rect")
                         .attr("fill",pressedColor)
+                        
+                 onchange(button.data()[0])
             }
 			
 			// ger f?rg f?r f?rsta elementet (h?g)
@@ -267,16 +274,19 @@ var g = svg.append("g");
 	
 	
 
-function onchange() {
-	selectValue = d3.select('select').property('value')
+function onchange(selectValue) {
+	//selectValue = d3.select('select').property('value')
 
 	d3.select("#labeltext").text(selectValue)
 	
-	color.domain([selectValue])
+	var labels = drawSet;
+	
+	//color.domain(labels.filter(function(d){ return d != selectValue; }))
+
+    window.drawSet = lineSet.filter(function(d){ return d != selectValue; })
 
 
-
-  var lineData = color.domain().map(function(name) {
+  var lineData = drawSet.map(function(name) {
     return {
       name: name,
       values: data.map(function(d) {
@@ -293,31 +303,32 @@ function onchange() {
       if(d.name == selectValue){
         return 1;
     } else {
-        return 0;
+        return 1;
     }
   }
   );
   
   
   // remove lines might be useful in a later step
-  //var newLines = d3.selectAll(".line")
-  //.data(lineData);
+  var newLines = d3.selectAll(".line")
+  .data(lineData);
   
-  //newLines
-  //  .exit()
-  //  .remove()
+  newLines
+    .exit()
+    .remove()
   
   
-  //newLines
+  newLines
   //.transition()
   //.duration(1000)
-  //.attr("d", function(d) { return line(d.values); })
-  //.style("stroke", function(d) { return color(d.name); });
+  .attr("d", function(d) { return line(d.values); })
+  .attr("id", function(d) { return d.name + "_line";})
+  .style("stroke", function(d) { return color(d.name); });
    
    
 };
 
-
+// read this https://bost.ocks.org/mike/selection/
 
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)
