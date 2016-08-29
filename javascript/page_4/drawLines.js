@@ -15,6 +15,7 @@ function showInfo(data, tabletop) {
 window.lineSet = ["Pensionar", "Sparare"]
 window.drawSet = lineSet
 window.globalSex = "Fortroende for AMF"
+window.pressedButtons = []
 
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
@@ -265,10 +266,34 @@ var g = svg.append("g");
                 parent.selectAll("rect")
                         .attr("fill",defaultColor)
 
+								
+				if( pressedButtons.indexOf(button.data()[0]) == -1){ //indexOf returns -1 if element is not present in arry
+				
                 button.select("rect")
                         .attr("fill",pressedColor)
-                  
-                 window.drawSet = lineSet.filter(function(d){ return d != button.data()[0]; })
+						
+				window.pressedButtons = [button.data()[0]]
+                } else{				
+		
+				button.select("rect")
+                        .attr("fill",defaultColor)
+						
+				// if button was already pressed find out where in button array the previous element was and remove it
+				pressedButtons.splice(pressedButtons.indexOf(button.data()[0]), 1)	// splice/remove from index first element (index, element)					
+		
+				}  
+				  
+				  
+				  
+				function intersect(a, b) {
+					var t;
+					if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
+					return a.filter(function (e) {
+						if (b.indexOf(e) !== -1) return true;
+					});
+				}
+				
+				window.drawSet = intersect(lineSet, pressedButtons); // ["sue", "kathy"]
                   
                  onchange()
             }
@@ -301,25 +326,32 @@ function onchange() {
       })
     };
   });
+    
   
-  
-  // remove lines not needed
+  // DATA JOIN. bind data
   var newLines = d3.selectAll(".line")
   .data(lineData);
-  
-  newLines
-    .exit()
-    .remove()
-  
-  
+ 
+ // ENTER. enter new selection   
   newLines
   //.transition()
   //.duration(1000)
+  .enter()
+  .merge(newLines)
+  .append("path")
+  .attr("class", "line")
   .attr("d", function(d) { return line(d.values); })
   .attr("id", function(d) { return d.name + "_line";})
   .style("stroke", function(d) { return color(d.name); });
-   
-   
+  
+  
+  newLines
+    .exit()
+    .remove();
+  
+  
+
+	
 };
 
 // read this https://bost.ocks.org/mike/selection/
