@@ -1,6 +1,7 @@
 window.onload = function() { init() };
 
-	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
+	  //var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
+	var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1cX8OoO7hi3IKj3xymPuL6Tq2XaZZuFvmETWJ8Mr-4GA/pubhtml?gid=0&single=true';
 	d3.select("h3").attr("align","center");
 	  
 	  function init() {
@@ -11,9 +12,9 @@ window.onload = function() { init() };
 
 function showInfo(data, tabletop) {
 // global var for full set of filtering options
-window.lineSet = ["X1", "Y1","Y3"]
+window.lineSet = ["Pensionar", "Sparare"]
 window.drawSet = lineSet
-window.globalSex = "Man"
+window.globalSex = "Fortroende for AMF"
 
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
@@ -39,7 +40,7 @@ var formatTime = d3.utcParse("%d/%m/%Y %H:%M:%S");
 var formatValue = d3.format(",d");
 
 //var x = d3.scaleLog()
-var x = d3.scaleTime()
+var x = d3.scaleLinear()
     .range([0, width]);
 
 //var x = d3.scaleLog()
@@ -48,7 +49,7 @@ var y = d3.scaleLinear()
 	
 //  define line drawing function	
 var line = d3.line()
-    .x(function(d) { return x(formatTime(d.Timestamp)); })
+    .x(function(d) { return x(Number(d.Timestamp)); })
     .y(function(d) { return y(Number(d.Y1)); })
 	.curve(d3.curveLinear);
 	//.curve(d3.curveCatmullRomOpen.alpha(0.001));
@@ -59,7 +60,7 @@ var allButtons= svg.append("g")
                     .attr("id","allButtons") 
 
 //fontawesome button labels
-var labels = ['Man', 'Kvinna'];
+var labels = ["Fortroende for Arbetsformedlingen", "Fortroende for AMF"];
 
 //colors for different button states 
             var defaultColor= "#FFA500"
@@ -135,8 +136,8 @@ color.domain(lineSet)
   var lineData = color.domain().map(function(name) {
     return {
       name: name,
-      values: data.map(function(d) {
-        return {Timestamp: d.Timestamp, Y1: +d[name]};
+      values: data.filter(function(d) { return d.Nyckeltal == globalSex }).map(function(d) {
+        return {Timestamp: d.Ar, Y1: +d[name]};
       })
     };
   });
@@ -147,14 +148,14 @@ var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
-  x.domain(d3.extent(data, function(d) { return formatTime(d.Timestamp); }));
+  x.domain(d3.extent(data, function(d) { return Number(d.Ar); })); // quite stuupid this does not use same dataset as the one being drawn
 
   //x.domain([0,600]);
-  y.domain([0, 2000]);
-    
+  y.domain([0, 100]);
+   
     g.append("g")
           .attr("class", "axis axis--x")
-          .attr("transform", "translate(0," + (height/1.5) + ")")
+          .attr("transform", "translate(0," + (height) + ")")
           .call(d3.axisBottom(x));
 
   g.append("g")
@@ -295,8 +296,8 @@ function onchange() {
   var lineData = drawSet.map(function(name) {
     return {
       name: name,
-      values: data.filter(function(d) { return d.X3 == globalSex }).map(function(d) {
-        return {Timestamp: d.Timestamp, Y1: +d[name]};
+      values: data.filter(function(d) { return d.Nyckeltal == globalSex }).map(function(d) {
+        return {Timestamp: d.Ar, Y1: +d[name]};
       })
     };
   });
