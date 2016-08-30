@@ -331,26 +331,24 @@ function onchange() {
   // DATA JOIN. bind data
   var newLines = d3.selectAll(".line")
   .data(lineData);
+  
+  // EXIT remove old and unwante elements
+  newLines
+    .exit()
+    .remove();
+  
  
  // ENTER. enter new selection   
   newLines
   //.transition()
   //.duration(1000)
   .enter()
-  .merge(newLines)
   .append("path")
   .attr("class", "line")
-  .attr("d", function(d) { return line(d.values); })
-  .attr("id", function(d) { return d.name + "_line";})
-  .style("stroke", function(d) { return color(d.name); });
+      .attr("d", function(d) { return line(d.values); })
+      .attr("id", function(d) { return d.name + "_line";})
+      .style("stroke", "red");
   
-  
-  newLines
-    .exit()
-    .remove();
-  
-  
-
 	
 };
 
