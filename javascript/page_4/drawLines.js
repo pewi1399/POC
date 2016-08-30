@@ -178,15 +178,15 @@ var g = svg.append("g");
 //      .attr("d", line);
 
 //add lines
-  var lines = svg.selectAll(".lines")
+  var lines = svg.selectAll(".lineContainer")
       .data(lineData)
     .enter().append("g")
-      .attr("class", "lines");
+      .attr("class", "lineContainer");
 
   lines.append("path")
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
-      .attr("id", function(d) { return d.name + "_line";})
+      .attr("id", function(d) { return d.name;})
       .style("stroke", function(d) { return color(d.name); });
  
 //var select = d3.select('body')
@@ -329,27 +329,39 @@ function onchange() {
     
   
   // DATA JOIN. bind data
-  var newLines = d3.selectAll(".line")
-  .data(lineData);
+  var newLines = d3.selectAll(".lineContainer")
+  .data(lineData,   function(d) { return d ? d.name : this.id; });
   
-  // EXIT remove old and unwante elements
+  // EXIT remove old and unwanted elements saving the old nodes (g) for replot later on
   newLines
     .exit()
+	.selectAll(".line")
     .remove();
-  
  
- // ENTER. enter new selection   
+ // Since join above ENTER selection is empty 
   newLines
-  //.transition()
-  //.duration(1000)
-  .enter()
   .append("path")
   .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
-      .attr("id", function(d) { return d.name + "_line";})
-      .style("stroke", "red");
+      .attr("id", function(d) { return d.name;})
+      .style("stroke", function(d) { return color(d.name); });
   
-	
+  
+ /*
+
+    var lines = svg.selectAll(".lines")
+      .data(lineData)
+    .enter().append("g")
+      .attr("class", "lines");
+
+  lines.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .attr("id", function(d) { return d.name + "_line";})
+      .style("stroke", function(d) { return color(d.name); });
+*/
+
+	  
 };
 
 // read this https://bost.ocks.org/mike/selection/
