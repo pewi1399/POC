@@ -14,7 +14,7 @@ function showInfo(data, tabletop) {
 // global var for full set of filtering options
 window.lineSet = ["Pensionar", "Sparare"]
 window.drawSet = lineSet
-window.globalSex = "Fortroende for AMF"
+window.globalSex = "Fortroende for Arbetsformedlingen"
 window.pressedButtons = []
 
 
@@ -169,7 +169,7 @@ var g = svg.append("g");
       .attr("y", 6)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text(y.domain());
+      .text("Andel med fortroende");
 
 // add line	  
 //svg.append("path")
@@ -263,6 +263,7 @@ var g = svg.append("g");
                         .text(function(d) {return d;})
 
             function updateButtonColors(button, parent) {
+				
                 parent.selectAll("rect")
                         .attr("fill",defaultColor)
 
@@ -293,8 +294,17 @@ var g = svg.append("g");
 					});
 				}
 				
-				window.drawSet = intersect(lineSet, pressedButtons); // ["sue", "kathy"]
+				
+				
+				if(pressedButtons.length == 0){
+					
+					window.drawSet = lineSet 
+				
+				} else {
+				
+					window.drawSet = intersect(lineSet, pressedButtons); 
                   
+				}
                  onchange()
             }
 			
@@ -337,6 +347,9 @@ function onchange() {
     .exit()
 	.selectAll(".line")
     .remove();
+	
+	// check out this redundancy (?) later
+	newLines.selectAll(".line").remove()
  
  // Since join above ENTER selection is empty 
   newLines
