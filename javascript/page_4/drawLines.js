@@ -304,9 +304,9 @@ var g = svg.append("g");
 				var hits  = []
 
 				for(i = 0; i < globalLineSet.length; i++){
-					if(globalLineSet[i].match("Sparare|Man") != null){
+					if(globalLineSet[i].match(pressedButtons.join("|")) != null){
 						
-							hits.push(globalLineSet[i].match("Sparare|Man").input);
+							hits.push(globalLineSet[i].match(pressedButtons.join("|")).input);
 					}
 				}
 				
