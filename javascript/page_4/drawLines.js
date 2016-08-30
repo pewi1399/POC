@@ -12,8 +12,8 @@ window.onload = function() { init() };
 
 function showInfo(data, tabletop) {
 // global var for full set of filtering options
-window.lineSet = ["Pensionar", "Sparare"]
-window.drawSet = lineSet
+window.globalLineSet = ["Pensionar", "Sparare", "SparareLag", "SparareMedel", "SparareHog", "SparareMan", "SparareKvinna", "PensionarLag", "PensionarMedel", "PensionarHog", "PensionarMan", "PensionarKvinna"]
+window.globalDrawSet = globalLineSet
 window.globalSex = "Fortroende for Arbetsformedlingen"
 window.pressedButtons = []
 
@@ -120,8 +120,7 @@ var dispatch = d3.dispatch("load", "statechange");
 //});
 
 
-
-
+//for(i = 0; i < gg.length; i++){console.log(gg[i].match("b|a").input)} TEST 2016/08/30
 // -----------------------------------------------------------------------------
 
 
@@ -130,7 +129,7 @@ var dispatch = d3.dispatch("load", "statechange");
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-color.domain(lineSet)
+color.domain(globalLineSet)
 
 
 
@@ -207,7 +206,7 @@ var g = svg.append("g");
 
             //groups for each button (which will hold a rect and text)
             var buttonGroups= allButtons.selectAll("g.button")
-                                    .data(lineSet)
+                                    .data(globalLineSet)
                                     .enter()
                                     .append("g")
                                     .attr("class","button")
@@ -268,7 +267,7 @@ var g = svg.append("g");
                         .attr("fill",defaultColor)
 
 								
-				if( pressedButtons.indexOf(button.data()[0]) == -1){ //indexOf returns -1 if element is not present in arry
+				if( pressedButtons.indexOf(button.data()[0]) == -1){ //indexOf returns -1 if element is not present in array
 				
                 button.select("rect")
                         .attr("fill",pressedColor)
@@ -298,12 +297,21 @@ var g = svg.append("g");
 				
 				if(pressedButtons.length == 0){
 					
-					window.drawSet = lineSet 
+					window.globalDrawSet = globalLineSet 
 				
 				} else {
+					
+				var hits  = []
+
+				for(i = 0; i < globalLineSet.length; i++){
+					if(globalLineSet[i].match("Sparare|Man") != null){
+						
+							hits.push(globalLineSet[i].match("Sparare|Man").input);
+					}
+				}
 				
-					window.drawSet = intersect(lineSet, pressedButtons); 
-                  
+				window.globalDrawSet = intersect(hits, pressedButtons); 
+								  
 				}
                  onchange()
             }
@@ -328,7 +336,7 @@ function onchange() {
     //window.drawSet = lineSet.filter(function(d){ return d != selectValue; })
 
 
-  var lineData = drawSet.map(function(name) {
+  var lineData = globalDrawSet.map(function(name) {
     return {
       name: name,
       values: data.filter(function(d) { return d.Nyckeltal == globalSex }).map(function(d) {
