@@ -4,10 +4,11 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"> 
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -36,6 +37,8 @@
 	
 	<!--<svg width="960" height="200"></svg>-->
 	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript" src="src/tabletop.js"></script>
 
 	
@@ -56,6 +59,21 @@ montes, nascetur ridiculus mus. Proin tempor quis dolor nec tempus.
 <a href="https://pewi1399.github.io/POC/">Home (web)</a>
 
 <script type="text/javascript" src="javascript/page_4/drawLines.js"></script>
+
+
+
+<select class="js-example-basic-multiple" multiple="multiple">
+  <option value="AL">Alabama</option>
+   <option value="GG">Raisin</option>
+	<option value="YY">Alyyy</option>
+  <option value="WY">Wyoming</option>
+</select>
+
+<script type="text/javascript">
+$(".js-example-basic-multiple").select2();
+</script>
+
+
 
 
         </section>
