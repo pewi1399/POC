@@ -186,7 +186,25 @@ var g = svg.append("g");
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
       .attr("id", function(d) { return d.name;})
-      .style("stroke", function(d) { return color(d.name); });
+      .style("stroke", function(d) { return color(d.name); })
+	  .on("mouseover", function() {
+				if (d3.select(this).style("stroke") != pressedColor) {
+					
+					d3.selectAll(".line").attr("opacity", "0.5").style("stroke", "grey")
+					
+					d3.select(this)
+						.attr("opacity", "1")
+						.style("stroke-width", 3)
+						.style("stroke", function(d) { return color(d.name); });
+				}
+			})
+	  .on("mouseout", function() {
+				if (d3.select(this).style("stroke") != pressedColor) {
+					
+					d3.selectAll(".line").attr("opacity", "1").style("stroke-width", 1).style("stroke", function(d) { return color(d.name); });
+					
+				}
+			})
  
 //var select = d3.select('body')
 //  .append('select')
@@ -226,7 +244,7 @@ var g = svg.append("g");
                                         if (d3.select(this).select("rect").attr("fill") != pressedColor) {
                                             d3.select(this)
                                                 .select("rect")
-                                                .attr("fill",defaultColor);
+                                                .attr("fill", function(d) { return color(d); });;
                                         }
                                     })
 
@@ -243,7 +261,7 @@ var g = svg.append("g");
                         .attr("y", function(d,i) {return y0+(bHeight+bSpace)*i;})
                         .attr("rx",10) //rx and ry give the buttons rounded corners
                         .attr("ry",10)
-                        .attr("fill",defaultColor)
+						.attr("fill", function(d) { return color(d); });
 
             //adding text to each toggle button group, centered 
             //within the toggle button rect
@@ -264,19 +282,23 @@ var g = svg.append("g");
             function updateButtonColors(button, parent) {
 				
                 parent.selectAll("rect")
-                        .attr("fill",defaultColor)
+                        	.attr("fill", function(d) { return color(d); });
 
 								
 				if( pressedButtons.indexOf(button.data()[0]) == -1){ //indexOf returns -1 if element is not present in array
 				
-                button.select("rect")
-                        .attr("fill",pressedColor)
+				
+				    parent.selectAll("rect")
+                        	.attr("fill", "grey");
+							
+					button.select("rect")
+                        	.attr("fill", function(d) { return color(d); });
 						
 				window.pressedButtons = [button.data()[0]]
                 } else{				
 		
 				button.select("rect")
-                        .attr("fill",defaultColor)
+                        	.attr("fill", function(d) { return color(d); });
 						
 				// if button was already pressed find out where in button array the previous element was and remove it
 				pressedButtons.splice(pressedButtons.indexOf(button.data()[0]), 1)	// splice/remove from index first element (index, element)					
