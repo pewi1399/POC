@@ -148,7 +148,7 @@ var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
-  x.domain(d3.extent(data, function(d) { return Number(d.Ar); })); // quite stuupid this does not use same dataset as the one being drawn
+  x.domain(d3.extent(data, function(d) { return Number(d.Ar); })); // quite stupid this does not use same dataset as the one being drawn
 
   //x.domain([0,600]);
   y.domain([0, 100]);
@@ -408,6 +408,8 @@ function onchange() {
 };
 
 // read this https://bost.ocks.org/mike/selection/
+
+// get data from multiselect $(".js-example-basic-multiple").val()
 
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)
