@@ -20,13 +20,13 @@ window.pressedButtons = []
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
 			width = 960 - margin.left - margin.right,
-			height = 550- margin.top - margin.bottom;	
+			height = 350- margin.top - margin.bottom;	
 	
 	
 var svg = d3.select("h3")
 			.append("div")
 			.attr("id","testname")
-			.classed("svg-container", true)
+			.classed("svg-container_p4", true)
 			.append("svg")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
@@ -83,10 +83,11 @@ var dispatch = d3.dispatch("load", "statechange");
   var selector = d3.select("#dropList")
     .append("div")
     .append("select")
-	 .attr('class','select')
+	.attr("multiple", "multiple")
+	 .attr('class',"js-example-basic-multiple")
     .on('change',function(){ 
     
-        window.globalSex = d3.select('select').property('value')
+        window.globalSex = $("select").val()//d3.select('select').property('value')
         onchange() 
         }
     )
@@ -95,11 +96,16 @@ var dispatch = d3.dispatch("load", "statechange");
       //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
     .data(labels)
     .enter().append("option")
-	.attr("class", "dropdown")
       .attr("value", function(d) { return d; })
       .text(function(d) { return d; });
 	  
-
+$(".js-example-basic-multiple").select2({
+		
+		placeholder: "Välj variabel"
+		
+	});
+	  
+//class="js-example-basic-multiple" multiple="multiple"
 
 // A drop-down menu for selecting a state; uses the "menu" namespace.
 //dispatch.on("load.menu", function(stateById) {
@@ -409,7 +415,7 @@ function onchange() {
 
 // read this https://bost.ocks.org/mike/selection/
 
-// get data from multiselect $(".js-example-basic-multiple").val()
+// get data from multiselect:  $(".js-example-basic-multiple").val()
 
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)

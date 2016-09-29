@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"> 
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen">
+	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+	
+	<style>
+div.ex1 {
+    width:500px;
+    margin: auto;
+}
+
+div.ex2 {
+    max-width:1200px;
+    margin: auto;
+    border: 3px solid #73AD21;
+}
+</style>
+  </head>
+
+  <body>
+  
+  	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/select2/4.0.3/js/select2.min.js"></script>
+    <script type="text/javascript" src="src/tabletop.js"></script>
+  
+  <div class="ex1">
+  Some text to make this easier to look at...
+<p>&nbsp;</p>
+  </div>
+  
+  <!--
+Välj ut element
+  $("#select2-multiple-input-sm").val()-->
+  <!-- 
+  
+  
+  -->
+  
+ <div id="dropList"></div>
+  <script type="text/javascript">
+  
+ var a1 = [1,2,3]
+ var a2 = [4,5,6]
+ var a3 = [7,8,9]
+ 
+ var alternatives = [a1, a2, a3]
+  
+var topDiv = d3.select("#dropList")
+    .append("div")
+	
+var selectors = topDiv.selectAll(".lists")
+	.data(alternatives)
+	.enter()
+	.append("div")
+	.attr("class", "col-md-4") // set class of divs
+    .append("select")
+	.attr("multiple", "multiple")
+	.attr('id', function(d,i ) { return "test" + i;}) 
+	.attr('class', "form-control input-sm select2-multiple" ) // set class of selectors
+	  .call(function(parent){
+	  
+	 for(j = 0; j < 3; j++){
+    parent.append('option').text(function(d){ return d[j]; }).attr("value", function(d){ return d[j]; });
+
+	}
+	});	
+
+	//activate select2 on all 
+	$("#test0").select2()
+	$("#test1").select2()
+	$("#test2").select2()
+
+/*	
+			.append("option")
+    .attr("value", function(d, i) { return d[i]; })
+    .text(function(d, i) { return d[i]; })
+
+	
+	.append("option")
+    .attr("value", function(d, i) { return d[i]; })
+    .text(function(d, i) { return d[i]; })
+
+
+
+var selector1 = topDiv
+	.append("div")
+	.attr("class", "col-md-4")
+    .append("select")
+	.attr("multiple", "multiple")
+	 .attr("id", "selector1")
+	 .attr('class', "form-control input-sm select2-multiple" )//"js-example-basic-multiple")
+	 
+  selector1.selectAll("option")
+      //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
+    .data(a1)
+    .enter().append("option")
+      .attr("value", function(d) { return d; })
+      .text(function(d) { return d; });
+	  
+var selector2 = topDiv
+	.append("div")
+	.attr("class", "col-md-4")
+    .append("select")
+	.attr("multiple", "multiple")
+	 .attr("id", "selector2")
+	 .attr('class', "form-control input-sm select2-multiple" )//"js-example-basic-multiple")
+	 
+  selector2.selectAll("option")
+      //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
+    .data(a2)
+    .enter().append("option")
+      .attr("value", function(d) { return d; })
+      .text(function(d) { return d; });
+  */
+  
+  </script>
+  
+  
+<div class="ex2">
+	<svg width="1200" height="410">
+	 <rect x="10" y="10" width="1180" height="400" fill = "white"/>
+	</svg>
+<div>
+  
+  
+  
+  
+<div class="ex2">
+				<div class="col-md-4">
+					<label for="select2-multiple-input-smGG" class="control-label">col-md-4</label>
+					<select id="select2-multiple-input-smGG" class="form-control input-sm select2-multiple" multiple>
+							<option value="CA">California</option>
+							<option value="NV">Nevada</option>
+							<option value="OR">Oregon</option>
+							<option value="WA">Washington</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label for="select2-single-input-sm" class="control-label">col-md-3</label>
+					<select id="select2-single-input-sm" class="form-control input-sm select2-multiple">
+							<option value="AK">Alaska</option>
+							<option value="HI">Hawaii</option>
+							<option value="CA">California</option>
+							<option value="NV">Nevada</option>
+							<option value="OR">Oregon</option>
+							<option value="WA">Washington</option>
+				</select>
+				</div>
+				<div class="col-md-2">
+					<label for="bootstrap-input-sm" class="control-label">Bootstrap input</label>
+					<input id="bootstrap-input-sm" class="form-control input-sm" placeholder=".input-sm">
+				</div>
+				<div class="col-md-3">
+					<div class="form-group has-success">
+						<label for="select2-single-input-group-sm" class="control-label">col-md-3</label>
+						<div class="input-group input-group-sm select2-bootstrap-prepend">
+							<span class="input-group-addon">
+								<input type="radio">
+							</span>
+							<select id="select2-single-input-group-sm" class="form-control select2">
+								<option></option>
+	<option value="AK">Alaska</option>
+	<option value="HI">Hawaii</option>
+
+
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			
+<div class="ex1">
+  Placeholder....
+<p>&nbsp;</p>
+  </div>
+
+<script>
+
+$("#select2-multiple-input-sm").select2({
+  theme: "classic"
+})
+$("#select2-single-input-group-sm").select2()
+$("#selector1").select2()
+$("#form-control input-sm select2-multiple").select2()
+</script>
+			
+</body>
