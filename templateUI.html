@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!--<meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"> 
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen">
-	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css">
-	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen"> <!-- ordnar alignemnt av formulärfält bland annat -->
+	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css"><!-- ger symboler exempelvis plustecken-->
+	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" /> <!-- select2 för multipla inputs från ett och samma fält -->
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -147,64 +147,12 @@ var selector2 = topDiv
 	 <rect x="10" y="10" width="1180" height="400" fill = "white"/>
 	</svg>
 <div>
-  
-  
-  
- <!--
-<div class="ex2">
-				<div class="col-md-3">
-					<label for="select2-single-input-sm" class="control-label">col-md-3</label>
-					<select id="select2-single-input-sm" class="form-control input-sm select2-multiple">
-							<option value="AK">Alaska</option>
-							<option value="HI">Hawaii</option>
-							<option value="CA">California</option>
-							<option value="NV">Nevada</option>
-							<option value="OR">Oregon</option>
-							<option value="WA">Washington</option>
-				</select>
-				</div>
-				<div class="col-md-3">
-					<label for="select2-single-input-sm" class="control-label">col-md-3</label>
-					<select id="select2-single-input-sm" class="form-control input-sm select2-multiple">
-							<option value="AK">Alaska</option>
-							<option value="HI">Hawaii</option>
-							<option value="CA">California</option>
-							<option value="NV">Nevada</option>
-							<option value="OR">Oregon</option>
-							<option value="WA">Washington</option>
-				</select>
-				</div>
-				<div class="col-md-3">
-					<label for="select2-single-input-sm" class="control-label">col-md-3</label>
-					<select id="select2-single-input-sm" class="form-control input-sm select2-multiple">
-							<option value="AK">Alaska</option>
-							<option value="HI">Hawaii</option>
-							<option value="CA">California</option>
-							<option value="NV">Nevada</option>
-							<option value="OR">Oregon</option>
-							<option value="WA">Washington</option>
-				</select>
-				</div>
-				<div class="col-md-3">
-					<label for="select2-single-input-sm" class="control-label">col-md-3</label>
-					<select id="select2-single-input-sm" class="form-control input-sm select2-multiple">
-							<option value="AK">Alaska</option>
-							<option value="HI">Hawaii</option>
-							<option value="CA">California</option>
-							<option value="NV">Nevada</option>
-							<option value="OR">Oregon</option>
-							<option value="WA">Washington</option>
-				</select>
-				</div>
-			</div>
-</div>
--->
 
 <form id="bookForm" method="post" class="form-horizontal">
     <div class="form-group">
         <label class="col-xs-1 control-label">Book</label>
         <div class="col-xs-4">
-            <input type="text" class="form-control" name="book[0].title" placeholder="Kundtyp" />
+            <input type="text" class="form-control" name="book[0].title"  id="book[0].title" placeholder="Kundtyp" />
         </div>
         <div class="col-xs-4">
             <input type="text" class="form-control" name="book[0].isbn" placeholder="ISBN" />
@@ -220,10 +168,13 @@ var selector2 = topDiv
     <!-- The template for adding new field -->
     <div class="form-group hide" id="bookTemplate">
         <div class="col-xs-4 col-xs-offset-1">
-            <input type="text" class="form-control" name="title" placeholder="Title" />
+            <input type="select" class="form-control" name="title" id ="title" placeholder="Title" />
         </div>
         <div class="col-xs-4">
-            <input type="text" class="form-control" name="isbn" placeholder="ISBN" />
+            <select type="text" class="form-control" name="isbn" placeholder="ISBN" />
+			<option> gg </option>
+			<option> hh </option>
+			</select>
         </div>
         <div class="col-xs-2">
             <input type="text" class="form-control" name="price" placeholder="Price" />
@@ -242,53 +193,9 @@ var selector2 = topDiv
 
 <script>
 $(document).ready(function() {
-    var titleValidators = {
-            row: '.col-xs-4',   // The title is placed inside a <div class="col-xs-4"> element
-            validators: {
-                notEmpty: {
-                    message: 'The title is required'
-                }
-            }
-        },
-        isbnValidators = {
-            row: '.col-xs-4',
-            validators: {
-                notEmpty: {
-                    message: 'The ISBN is required'
-                },
-                isbn: {
-                    message: 'The ISBN is not valid'
-                }
-            }
-        },
-        priceValidators = {
-            row: '.col-xs-2',
-            validators: {
-                notEmpty: {
-                    message: 'The price is required'
-                },
-                numeric: {
-                    message: 'The price must be a numeric number'
-                }
-            }
-        },
-        bookIndex = 0;
+    var bookIndex = 0;
 
     $('#bookForm')
-      /*  .formValidation({
-            framework: 'bootstrap',
-            icon: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                'book[0].title': titleValidators,
-                'book[0].isbn': isbnValidators,
-                'book[0].price': priceValidators
-            }
-        })*/
-
         // Add button click handler
         .on('click', '.addButton', function() {
             bookIndex++;
@@ -325,11 +232,11 @@ $(document).ready(function() {
                 .formValidation('removeField', $row.find('[name="book[' + index + '].isbn"]'))
                 .formValidation('removeField', $row.find('[name="book[' + index + '].price"]'));
 				*/
-				
+				/*
 				$row.find('[name="book[' + index + '].title"]').remove()
 				$row.find('[name="book[' + index + '].isbn"]').remove()
 				$row.find('[name="book[' + index + '].price"]').remove()
-
+*/
             // Remove element containing the fields
             $row.remove();
         });
@@ -342,6 +249,8 @@ $(document).ready(function() {
 <p>&nbsp;</p>
   </div>
 
+  <!-- mycket användbart jquery trick $('input[name^="book[1].title"').val() -->
+  
 <script>
 
 $("#select2-multiple-input-sm").select2({
