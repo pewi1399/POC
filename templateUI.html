@@ -182,12 +182,13 @@ $(document).ready(function() {
               $('select[name^="book[' + bookIndex + ']"').on('change',function(){
                 var existing_keys = dataset.map(function(d) { return d["name"]; });
 
-                if(existing_keys.indexOf($(this).attr("name"))){
-                  var index = existing_keys.indexOf($(this).attr("name"))
-                  $.extend(dataset[index], dataset[index], {title:$(this).val()}); // update existing frame with data
+                if(existing_keys.indexOf($(this).attr("name").substr(0,7))!=-1){
+                  var index = existing_keys.indexOf($(this).attr("name").substr(0,7))
+                  var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
+                  $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
                 } else {
                   //om nyckeln saknas lägg till objekt i array
-                  dataset.push({name:$(this).attr("name")})
+                  dataset.push({name:$(this).attr("name").substr(0,7)})
                 };
               });
               //$('select[name^="book[' + bookIndex + '].isbn"').on('change',function(){console.log($(this).val())});
