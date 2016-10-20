@@ -43,10 +43,6 @@ div.ex2 {
   <!--
 Välj ut element
   $("#select2-multiple-input-sm").val()-->
-  <!--
-
-
-  -->
 
  <div id="dropList"></div>
   <script type="text/javascript">
@@ -56,6 +52,13 @@ Välj ut element
  var a3 = ["PM", "AMF", "IF", "SIF", "VIF", "Etc"]
 
  var alternatives = [a1, a2, a3]
+
+ var data1 = {name:"book[1]", x:12}
+ var data2 = {name:"book[1]", y:20}
+ var data3 = {name:"book[2]", x:10}
+
+var dataset = [{name:"book[1]", x:12},{name:"book[2]", x:1, y:12}];
+
 
 var topDiv = d3.select("#dropList")
     .append("div")
@@ -81,9 +84,6 @@ var selectors = topDiv.selectAll(".lists")
 	$("#test0").select2()
 	$("#test1").select2()
 	$("#test2").select2()
-
-
-
 
 function get_primary_lineset(){
 
@@ -179,9 +179,19 @@ $(document).ready(function() {
             // Add new fields
             // and listeners for changes in document
             $('#bookForm')
-              $('select[name^="book[' + bookIndex + '].title"').on('change',function(){console.log($(this).val())});
-              $('select[name^="book[' + bookIndex + '].isbn"').on('change',function(){console.log($(this).val())});
-              $('select[name^="book[' + bookIndex + '].price"').on('change',function(){console.log($(this).val())});
+              $('select[name^="book[' + bookIndex + ']"').on('change',function(){
+                var existing_keys = dataset.map(function(d) { return d["name"]; });
+
+                if(existing_keys.indexOf($(this).attr("name"))){
+                  var index = existing_keys.indexOf($(this).attr("name"))
+                  $.extend(dataset[index], dataset[index], {title:$(this).val()}); // update existing frame with data
+                } else {
+                  //om nyckeln saknas lägg till objekt i array
+                  dataset.push({name:$(this).attr("name")})
+                };
+              });
+              //$('select[name^="book[' + bookIndex + '].isbn"').on('change',function(){console.log($(this).val())});
+              //$('select[name^="book[' + bookIndex + '].price"').on('change',function(){console.log($(this).val())});
             })
 
         // Remove button click handler
