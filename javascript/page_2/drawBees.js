@@ -73,11 +73,15 @@ var data = newdata
 
   var cell = g.append("g")
       .attr("class", "cells")
-    .selectAll("g").data(d3.voronoi()
-        .extent([[-margin.left, -margin.top], [width + margin.right, height + margin.top]])
-        .x(function(d) { return d.x; })
-        .y(function(d) { return d.y; })
-      .polygons(data)).enter().append("g");
+    .selectAll("g")
+    .data(
+        d3.voronoi()
+            .extent([[-margin.left, -margin.top], [width + margin.right, height + margin.top]])
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+            .polygons(data)
+      )
+      .enter().append("g");
 
   cell.append("circle")
 	  .attr("class", "bees")
