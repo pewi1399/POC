@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+
+ <a  id="add">+</a></td>
+  <table id="mytable" width="300" border="1" cellspacing="0" cellpadding="2">
+  <tbody>
+    <tr>
+      <td>Name</td>
+    </tr>
+    <tr class="person">
+      <td><input type="text" name="name" id="name" /></td>
+    </tr>
+    </tbody>
+  </table>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#add").click(function() {
+          $('#mytable tbody>tr:last').clone(true).insertAfter('#mytable tbody>tr:last');
+    $('#mytable tbody>tr:last #name').val('new name'); 
+          return false;
+        });
+    });
+	
+	
+	$("#mytable tbody>tr:last").each(function() {this.reset();});
+</script>

@@ -1,6 +1,7 @@
 window.onload = function() { init() };
 
-	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
+	  //var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
+	var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1cX8OoO7hi3IKj3xymPuL6Tq2XaZZuFvmETWJ8Mr-4GA/pubhtml?gid=0&single=true';
 	d3.select("h3").attr("align","center");
 	  
 	  function init() {
@@ -11,20 +12,21 @@ window.onload = function() { init() };
 
 function showInfo(data, tabletop) {
 // global var for full set of filtering options
-window.lineSet = ["X1", "Y1","Y3"]
-window.drawSet = lineSet
-window.globalSex = "Man"
+window.globalLineSet = ["Pensionar", "Sparare", "SparareLag", "SparareMedel", "SparareHog", "SparareMan", "SparareKvinna", "PensionarLag", "PensionarMedel", "PensionarHog", "PensionarMan", "PensionarKvinna"]
+window.globalDrawSet = globalLineSet
+window.globalSex = "Fortroende for Arbetsformedlingen"
+window.pressedButtons = []
 
 
 		var margin = {top: 20, right: 100, bottom: 30, left: 300},
 			width = 960 - margin.left - margin.right,
-			height = 550- margin.top - margin.bottom;	
+			height = 350- margin.top - margin.bottom;	
 	
 	
 var svg = d3.select("h3")
 			.append("div")
 			.attr("id","testname")
-			.classed("svg-container", true)
+			.classed("svg-container_p4", true)
 			.append("svg")
 			//.attr("width", width + margin.left + margin.right)
 			//.attr("height", height + margin.top + margin.bottom)
@@ -39,7 +41,7 @@ var formatTime = d3.utcParse("%d/%m/%Y %H:%M:%S");
 var formatValue = d3.format(",d");
 
 //var x = d3.scaleLog()
-var x = d3.scaleTime()
+var x = d3.scaleLinear()
     .range([0, width]);
 
 //var x = d3.scaleLog()
@@ -48,7 +50,7 @@ var y = d3.scaleLinear()
 	
 //  define line drawing function	
 var line = d3.line()
-    .x(function(d) { return x(formatTime(d.Timestamp)); })
+    .x(function(d) { return x(Number(d.Timestamp)); })
     .y(function(d) { return y(Number(d.Y1)); })
 	.curve(d3.curveLinear);
 	//.curve(d3.curveCatmullRomOpen.alpha(0.001));
@@ -59,7 +61,7 @@ var allButtons= svg.append("g")
                     .attr("id","allButtons") 
 
 //fontawesome button labels
-var labels = ['Man', 'Kvinna'];
+var labels = ["Fortroende for Arbetsformedlingen", "Fortroende for AMF"];
 
 //colors for different button states 
             var defaultColor= "#FFA500"
@@ -81,10 +83,11 @@ var dispatch = d3.dispatch("load", "statechange");
   var selector = d3.select("#dropList")
     .append("div")
     .append("select")
-	 .attr('class','select')
+	.attr("multiple", "multiple")
+	 .attr('class',"js-example-basic-multiple")
     .on('change',function(){ 
     
-        window.globalSex = d3.select('select').property('value')
+        window.globalSex = $("select").val()//d3.select('select').property('value')
         onchange() 
         }
     )
@@ -93,11 +96,16 @@ var dispatch = d3.dispatch("load", "statechange");
       //.data(d3.keys(data[0]).filter(function(key) { return key.length <3; }))
     .data(labels)
     .enter().append("option")
-	.attr("class", "dropdown")
       .attr("value", function(d) { return d; })
       .text(function(d) { return d; });
 	  
-
+$(".js-example-basic-multiple").select2({
+		
+		placeholder: "Välj variabel"
+		
+	});
+	  
+//class="js-example-basic-multiple" multiple="multiple"
 
 // A drop-down menu for selecting a state; uses the "menu" namespace.
 //dispatch.on("load.menu", function(stateById) {
@@ -118,8 +126,7 @@ var dispatch = d3.dispatch("load", "statechange");
 //});
 
 
-
-
+//for(i = 0; i < gg.length; i++){console.log(gg[i].match("b|a").input)} TEST 2016/08/30
 // -----------------------------------------------------------------------------
 
 
@@ -128,15 +135,15 @@ var dispatch = d3.dispatch("load", "statechange");
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
 //color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-color.domain(lineSet)
+color.domain(globalLineSet)
 
 
 
   var lineData = color.domain().map(function(name) {
     return {
       name: name,
-      values: data.map(function(d) {
-        return {Timestamp: d.Timestamp, Y1: +d[name]};
+      values: data.filter(function(d) { return d.Nyckeltal == globalSex }).map(function(d) {
+        return {Timestamp: d.Ar, Y1: +d[name]};
       })
     };
   });
@@ -147,14 +154,14 @@ var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //x.domain(d3.extent(data, function(d) { return Number(d.X1); }));
-  x.domain(d3.extent(data, function(d) { return formatTime(d.Timestamp); }));
+  x.domain(d3.extent(data, function(d) { return Number(d.Ar); })); // quite stupid this does not use same dataset as the one being drawn
 
   //x.domain([0,600]);
-  y.domain([0, 2000]);
-    
+  y.domain([0, 100]);
+   
     g.append("g")
           .attr("class", "axis axis--x")
-          .attr("transform", "translate(0," + (height/1.5) + ")")
+          .attr("transform", "translate(0," + (height) + ")")
           .call(d3.axisBottom(x));
 
   g.append("g")
@@ -167,7 +174,7 @@ var g = svg.append("g");
       .attr("y", 6)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text(y.domain());
+      .text("Andel med fortroende");
 
 // add line	  
 //svg.append("path")
@@ -176,16 +183,34 @@ var g = svg.append("g");
 //      .attr("d", line);
 
 //add lines
-  var lines = svg.selectAll(".lines")
+  var lines = svg.selectAll(".lineContainer")
       .data(lineData)
     .enter().append("g")
-      .attr("class", "lines");
+      .attr("class", "lineContainer");
 
   lines.append("path")
       .attr("class", "line")
       .attr("d", function(d) { return line(d.values); })
-      .attr("id", function(d) { return d.name + "_line";})
-      .style("stroke", function(d) { return color(d.name); });
+      .attr("id", function(d) { return d.name;})
+      .style("stroke", function(d) { return color(d.name); })
+	  .on("mouseover", function() {
+				if (d3.select(this).style("stroke") != pressedColor) {
+					
+					d3.selectAll(".line").attr("opacity", "0.5").style("stroke", "grey")
+					
+					d3.select(this)
+						.attr("opacity", "1")
+						.style("stroke-width", 3)
+						.style("stroke", function(d) { return color(d.name); });
+				}
+			})
+	  .on("mouseout", function() {
+				if (d3.select(this).style("stroke") != pressedColor) {
+					
+					d3.selectAll(".line").attr("opacity", "1").style("stroke-width", 1).style("stroke", function(d) { return color(d.name); });
+					
+				}
+			})
  
 //var select = d3.select('body')
 //  .append('select')
@@ -205,7 +230,7 @@ var g = svg.append("g");
 
             //groups for each button (which will hold a rect and text)
             var buttonGroups= allButtons.selectAll("g.button")
-                                    .data(lineSet)
+                                    .data(globalLineSet)
                                     .enter()
                                     .append("g")
                                     .attr("class","button")
@@ -225,7 +250,7 @@ var g = svg.append("g");
                                         if (d3.select(this).select("rect").attr("fill") != pressedColor) {
                                             d3.select(this)
                                                 .select("rect")
-                                                .attr("fill",defaultColor);
+                                                .attr("fill", function(d) { return color(d); });;
                                         }
                                     })
 
@@ -242,7 +267,7 @@ var g = svg.append("g");
                         .attr("y", function(d,i) {return y0+(bHeight+bSpace)*i;})
                         .attr("rx",10) //rx and ry give the buttons rounded corners
                         .attr("ry",10)
-                        .attr("fill",defaultColor)
+						.attr("fill", function(d) { return color(d); });
 
             //adding text to each toggle button group, centered 
             //within the toggle button rect
@@ -261,14 +286,61 @@ var g = svg.append("g");
                         .text(function(d) {return d;})
 
             function updateButtonColors(button, parent) {
+				
                 parent.selectAll("rect")
-                        .attr("fill",defaultColor)
+                        	.attr("fill", function(d) { return color(d); });
 
-                button.select("rect")
-                        .attr("fill",pressedColor)
-                  
-                 window.drawSet = lineSet.filter(function(d){ return d != button.data()[0]; })
-                  
+								
+				if( pressedButtons.indexOf(button.data()[0]) == -1){ //indexOf returns -1 if element is not present in array
+				
+				
+				    parent.selectAll("rect")
+                        	.attr("fill", "grey");
+							
+					button.select("rect")
+                        	.attr("fill", function(d) { return color(d); });
+						
+				window.pressedButtons = [button.data()[0]]
+                } else{				
+		
+				button.select("rect")
+                        	.attr("fill", function(d) { return color(d); });
+						
+				// if button was already pressed find out where in button array the previous element was and remove it
+				pressedButtons.splice(pressedButtons.indexOf(button.data()[0]), 1)	// splice/remove from index first element (index, element)					
+		
+				}  
+				  
+				  
+				  
+				function intersect(a, b) {
+					var t;
+					if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
+					return a.filter(function (e) {
+						if (b.indexOf(e) !== -1) return true;
+					});
+				}
+				
+				
+				
+				if(pressedButtons.length == 0){
+					
+					window.globalDrawSet = globalLineSet 
+				
+				} else {
+					
+				var hits  = []
+
+				for(i = 0; i < globalLineSet.length; i++){
+					if(globalLineSet[i].match(pressedButtons.join("|")) != null){
+						
+							hits.push(globalLineSet[i].match(pressedButtons.join("|")).input);
+					}
+				}
+				
+				window.globalDrawSet = intersect(hits, pressedButtons); 
+								  
+				}
                  onchange()
             }
 			
@@ -292,36 +364,58 @@ function onchange() {
     //window.drawSet = lineSet.filter(function(d){ return d != selectValue; })
 
 
-  var lineData = drawSet.map(function(name) {
+  var lineData = globalDrawSet.map(function(name) {
     return {
       name: name,
-      values: data.filter(function(d) { return d.X3 == globalSex }).map(function(d) {
-        return {Timestamp: d.Timestamp, Y1: +d[name]};
+      values: data.filter(function(d) { return d.Nyckeltal == globalSex }).map(function(d) {
+        return {Timestamp: d.Ar, Y1: +d[name]};
       })
     };
   });
+    
   
+  // DATA JOIN. bind data
+  var newLines = d3.selectAll(".lineContainer")
+  .data(lineData,   function(d) { return d ? d.name : this.id; });
   
-  // remove lines not needed
-  var newLines = d3.selectAll(".line")
-  .data(lineData);
-  
+  // EXIT remove old and unwanted elements saving the old nodes (g) for replot later on
   newLines
     .exit()
-    .remove()
-  
-  
+	.selectAll(".line")
+    .remove();
+	
+	// check out this redundancy (?) later
+	newLines.selectAll(".line").remove()
+ 
+ // Since join above ENTER selection is empty 
   newLines
-  //.transition()
-  //.duration(1000)
-  .attr("d", function(d) { return line(d.values); })
-  .attr("id", function(d) { return d.name + "_line";})
-  .style("stroke", function(d) { return color(d.name); });
-   
-   
+  .append("path")
+  .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .attr("id", function(d) { return d.name;})
+      .style("stroke", function(d) { return color(d.name); });
+  
+  
+ /*
+
+    var lines = svg.selectAll(".lines")
+      .data(lineData)
+    .enter().append("g")
+      .attr("class", "lines");
+
+  lines.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .attr("id", function(d) { return d.name + "_line";})
+      .style("stroke", function(d) { return color(d.name); });
+*/
+
+	  
 };
 
 // read this https://bost.ocks.org/mike/selection/
+
+// get data from multiselect:  $(".js-example-basic-multiple").val()
 
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)

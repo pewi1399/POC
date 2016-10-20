@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <!--<meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen"> <!-- ordnar alignemnt av formulärfält bland annat -->
+	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css"><!-- ger symboler exempelvis plustecken-->
+	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" /> <!-- select2 -->
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+	<style>
+div.ex1 {
+    width:500px;
+    margin: auto;
+}
+
+div.ex2 {
+    max-width:1200px;
+    margin: auto;
+    border: 3px solid #73AD21;
+}
+</style>
+  </head>
+
+  <body>
+
+  	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/select2/4.0.3/js/select2.min.js"></script>
+    <script type="text/javascript" src="src/tabletop.js"></script>
+
+  <div class="ex1">
+  Some text to make this easier to look at...
+<p>&nbsp;</p>
+  </div>
+
+  <!--
+Välj ut element
+  $("#select2-multiple-input-sm").val()-->
+
+ <div id="dropList"></div>
+  <script type="text/javascript">
+
+ var a1 = ["Pensionär", "Sparare"]
+ var a2 = ["Hög", "Medel", "Låg"]
+ var a3 = ["PM", "AMF", "IF", "SIF", "VIF", "Etc"]
+
+ var alternatives = [a1, a2, a3]
+
+ var data1 = {name:"book[1]", x:12}
+ var data2 = {name:"book[1]", y:20}
+ var data3 = {name:"book[2]", x:10}
+
+var dataset = [{name:"book[1]", x:12},{name:"book[2]", x:1, y:12}];
+
+
+var topDiv = d3.select("#dropList")
+    .append("div")
+
+var selectors = topDiv.selectAll(".lists")
+	.data(alternatives)
+	.enter()
+	.append("div")
+	.attr("class", "col-md-4") //set class of divs
+    .append("select")
+	.attr("multiple", "multiple")
+	.attr('id', function(d,i ) { return "test" + i;})
+	.attr('class', "form-control input-sm select2-multiple" ) // set class of selectors
+	  .call(function(parent){
+
+	 for(j = 0; j < parent.data().length; j++){
+    parent.append('option').text(function(d){ return d[j]; }).attr("value", function(d){ return d[j]; });
+
+	}
+	});
+
+	//activate select2 on all
+	$("#test0").select2()
+	$("#test1").select2()
+	$("#test2").select2()
+
+function get_primary_lineset(){
+
+	var s1 = $("#test0").val();
+	var s2 = $("#test1").val();
+	var s3 = $("#test2").val();
+
+	window.primary_lineset_groups = s1.concat(s2);
+	window.primary_lineset_actors = s3;
+
+}
+  </script>
+<div class="ex2">
+	<svg width="1200" height="410">
+	 <rect x="10" y="10" width="1180" height="400" fill = "white"/>
+	</svg>
+<div>
+
+<form id="bookForm" method="post" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-xs-1 control-label">Book</label>
+        <div class="col-xs-4">
+            <select type="text" class="form-control" name="book[0].title"  id="book[0].title" placeholder="Kundtyp" />
+			<option> gg </option>
+			<option> hh </option>
+			</select>
+        </div>
+        <div class="col-xs-4">
+            <input type="text" class="form-control" name="book[0].isbn" placeholder="ISBN" />
+        </div>
+        <div class="col-xs-2">
+            <input type="text" class="form-control" name="book[0].price" placeholder="Price" />
+        </div>
+        <div class="col-xs-1">
+            <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+
+    <!-- The template for adding new field -->
+    <div class="form-group hide" id="bookTemplate">
+        <div class="col-xs-4 col-xs-offset-1">
+            <select type="text" class="form-control" name="title" placeholder="Title" />
+			<option> gg </option>
+			<option> hh </option>
+			</select>
+        </div>
+        <div class="col-xs-4">
+            <select type="text" class="form-control" name="isbn" placeholder="ISBN" />
+			<option> gg </option>
+			<option> hh </option>
+			</select>
+        </div>
+        <div class="col-xs-2">
+            <select type="text" class="form-control" name="price" placeholder="Price" />
+			<option> gg </option>
+			<option> hh </option>
+			</select>
+        </div>
+        <div class="col-xs-1">
+            <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-xs-5 col-xs-offset-1">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+</form>
+
+<script>
+$(document).ready(function() {
+    var bookIndex = 0;
+
+    $('#bookForm')
+        // Add button click handler
+        .on('click', '.addButton', function() {
+            bookIndex++;
+            var $template = $('#bookTemplate'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .attr('data-book-index', bookIndex)
+                                .insertBefore($template);
+
+            // Update the name attributes
+            $clone
+                .find('[name="title"]').attr('name', 'book[' + bookIndex + '].title').end()
+                .find('[name="isbn"]').attr('name', 'book[' + bookIndex + '].isbn').end()
+                .find('[name="price"]').attr('name', 'book[' + bookIndex + '].price').end();
+
+            // Add new fields
+            // and listeners for changes in document
+            $('#bookForm')
+              $('select[name^="book[' + bookIndex + ']"').on('change',function(){
+                var existing_keys = dataset.map(function(d) { return d["name"]; });
+
+                if(existing_keys.indexOf($(this).attr("name"))){
+                  var index = existing_keys.indexOf($(this).attr("name"))
+                  $.extend(dataset[index], dataset[index], {title:$(this).val()}); // update existing frame with data
+                } else {
+                  //om nyckeln saknas lägg till objekt i array
+                  dataset.push({name:$(this).attr("name")})
+                };
+              });
+              //$('select[name^="book[' + bookIndex + '].isbn"').on('change',function(){console.log($(this).val())});
+              //$('select[name^="book[' + bookIndex + '].price"').on('change',function(){console.log($(this).val())});
+            })
+
+        // Remove button click handler
+        .on('click', '.removeButton', function() {
+            var $row  = $(this).parents('.form-group'),
+                index = $row.attr('data-book-index');
+
+            // Remove fields
+            $('#bookForm')
+				/*
+				$row.find('[name="book[' + index + '].title"]').remove()
+				$row.find('[name="book[' + index + '].isbn"]').remove()
+				$row.find('[name="book[' + index + '].price"]').remove()
+*/
+            // Remove element containing the fields
+            $row.remove();
+        });
+});
+</script>
+
+
+<div class="ex1">
+  Placeholder....
+<p>&nbsp;</p>
+  </div>
+
+  <!-- mycket användbart jquery trick $('select[name^="book[1].title"').val() -->
+
+<script>
+
+$("#select2-multiple-input-sm").select2({
+  theme: "classic"
+})
+$("#select2-single-input-group-sm").select2()
+$("#selector1").select2()
+$("#form-control input-sm select2-multiple").select2()
+</script>
+
+</body>

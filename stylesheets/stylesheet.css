@@ -416,12 +416,22 @@ footer a:hover {
   stroke-width: 1.5px;
 }
 
+
+.svg-container_p4 {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 60%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+
 /* #dropdown menu styling */
 select {
    margin: 20px;
     border: 1px solid #111;
    background: transparent;
-   width: 150px;
+   width: 250px;
    padding: 5px 5px 5px 5px;
    font-size: 12px;
    border: 1px solid #ccc;
@@ -432,6 +442,33 @@ select {
     background: url(https://beta.pensionsmyndigheten.se/etc/clientlibs/pm-mainsite/images/pm-pyramid-application.ceda40c1c10a323fb866182383f4c752.svg) 96% / 15% no-repeat #eee;
 } 
 
+/* #dropdown menu styling */
+.js-example-basic-multiple {
+   margin: 20px;
+    border: 1px solid #111;
+   background: transparent;
+   width: 300px;
+   padding: 5px 5px 5px 5px;
+   font-size: 12px;
+   border: 1px solid #ccc;
+   height: 30px;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+    background: url(https://beta.pensionsmyndigheten.se/etc/clientlibs/pm-mainsite/images/pm-pyramid-application.ceda40c1c10a323fb866182383f4c752.svg) 96% / 15% no-repeat #eee;
+} 
+
+.select2-dropdown.select2-dropdown--below{
+    width: 148px !important;
+}
+
+.select2-container--default .select2-selection--single{
+    padding:6px;
+    height: 37px;
+    width: 148px; 
+    font-size: 1.2em;  
+    position: relative;
+}
 
 
 
