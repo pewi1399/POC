@@ -126,20 +126,20 @@ function get_primary_lineset(){
     <div class="form-group hide" id="bookTemplate">
         <div class="col-xs-4 col-xs-offset-1">
             <select type="text" class="form-control" name="title" placeholder="Title" />
-			<option> gg </option>
-			<option> hh </option>
+			<option> Kundtyp1 </option>
+			<option> Kundtyp2 </option>
 			</select>
         </div>
         <div class="col-xs-4">
             <select type="text" class="form-control" name="isbn" placeholder="ISBN" />
-			<option> gg </option>
-			<option> hh </option>
+			<option> Segment1 </option>
+			<option> Segment2 </option>
 			</select>
         </div>
         <div class="col-xs-2">
             <select type="text" class="form-control" name="price" placeholder="Price" />
-			<option> gg </option>
-			<option> hh </option>
+			<option> Aktör1 </option>
+			<option> Aktör2 </option>
 			</select>
         </div>
         <div class="col-xs-1">
@@ -155,6 +155,22 @@ function get_primary_lineset(){
 </form>
 
 <script>
+
+            $('select[name^="book[' + 0 + ']"').on('change',function(){
+                var existing_keys = dataset.map(function(d) { return d["name"]; });
+                // test if key is already present in set of lines to be drawn.
+                if(existing_keys.indexOf($(this).attr("name").substr(0,7))!=-1){
+                  // find index of key and exend that part of df with custom json
+                  var index = existing_keys.indexOf($(this).attr("name").substr(0,7))
+                  var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
+                  // update any existing key value pair, add any non existant
+                  $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
+                } else {
+                  //if key is missing push object to array
+                  dataset.push({name:$(this).attr("name").substr(0,7)})
+                };
+              });
+
 $(document).ready(function() {
     var bookIndex = 0;
 
@@ -181,14 +197,21 @@ $(document).ready(function() {
             $('#bookForm')
               $('select[name^="book[' + bookIndex + ']"').on('change',function(){
                 var existing_keys = dataset.map(function(d) { return d["name"]; });
-
+                // test if key is already present in set of lines to be drawn.
                 if(existing_keys.indexOf($(this).attr("name").substr(0,7))!=-1){
+                  // find index of key and exend that part of df with custom json
                   var index = existing_keys.indexOf($(this).attr("name").substr(0,7))
                   var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
+                  // update any existing key value pair, add any non existant
                   $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
                 } else {
-                  //om nyckeln saknas lägg till objekt i array
+                  //if key is missing push object to array
                   dataset.push({name:$(this).attr("name").substr(0,7)})
+
+                  var index = existing_keys.indexOf($(this).attr("name").substr(0,7))
+                  var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
+                  // update any existing key value pair, add any non existant
+                  $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
                 };
               });
               //$('select[name^="book[' + bookIndex + '].isbn"').on('change',function(){console.log($(this).val())});
