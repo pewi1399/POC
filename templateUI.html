@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">-->
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen"> <!-- ordnar alignemnt av formulärfält bland annat -->
 	<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css"><!-- ger symboler exempelvis plustecken-->
-	<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" /> <!-- select2 -->
+	<!--<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />--> <!-- select2 -->
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -69,8 +69,8 @@ Välj ut element
 
 var dataset = []//[{name:"book[1]", x:12},{name:"book[2]", x:1, y:12}];
 
-
-var topDiv = d3.select("#dropList")
+/*
+- topDiv = d3.select("#dropList")
     .append("div")
 
 var selectors = topDiv.selectAll(".lists")
@@ -91,9 +91,9 @@ var selectors = topDiv.selectAll(".lists")
 	});
 
 	//activate select2 on all
-	$("#test0").select2()
-	$("#test1").select2()
-	$("#test2").select2()
+	//$("#test0").select2()
+	//$("#test1").select2()
+	//$("#test2").select2()
 
 function get_primary_lineset(){
 
@@ -105,6 +105,7 @@ function get_primary_lineset(){
 	window.primary_lineset_actors = s3;
 
 }
+*/
   </script>
 <div class="ex2">
 	<svg width="1200" height="410">
@@ -114,57 +115,79 @@ function get_primary_lineset(){
 <form id="bookForm" method="post" class="form-horizontal">
     <div class="form-group">
         <label class="col-xs-1 control-label">Serie</label>
-        <div class="col-xs-4">
+        <div class="col-xs-3">
             <select type="text" class="form-control" name="book[0].title"  id="book[0].title" placeholder="Kundtyp" />
 		          <option selected disabled hidden>Välj Kundtyp</option>
-        			<option> Pensionär </option>
+        			<option> Pensionar </option>
         			<option> Sparare </option>
             </select>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-3">
             <select type="text" class="form-control" name="book[0].isbn" placeholder="ISBN" />
               <option selected disabled hidden>Välj Segment</option>
-        			<option> Hög </option>
-        			<option> Låg </option>
+              <option> Hog </option>
+        			<option> Medel </option>
+              <option> Lag </option>
+              <option> Kvinna </option>
+              <option> Man </option>
             </select>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-3">
             <select type="text" class="form-control" name="book[0].price" placeholder="Price" />
               <option selected disabled hidden>Välj Aktör</option>
-        			<option> Aktör1 </option>
-        			<option> Aktör2 </option>
+              <option> Fortroende for AMF </option>
+			        <option> Fortroende for Arbetsformedlingen </option>
+              <option>Kannedom om CSN</option>
+              <option>Pensionsmyndigheten ar kunniga</option>
+              <option>Pensionsmyndigheten informerar om pensionen på ett satt som ar relevant for mig</option>
             </select>
 	      </div>
         <div class="col-xs-1">
             <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
         </div>
+        <div class="col-xs-0">
+          <svg width="35" height="35">
+            <rect width="35" height="35" style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(0,0,0)" />
+          </svg>
+        </div>
     </div>
 
     <!-- The template for adding new field -->
     <div class="form-group hide" id="bookTemplate">
-        <div class="col-xs-4 col-xs-offset-1">
+        <div class="col-xs-3 col-xs-offset-1">
             <select type="text" class="form-control" name="title" placeholder="Title" />
       <option selected disabled hidden>Välj kundtyp</option>
-			<option> Pensionär </option>
+			<option> Pensionar </option>
 			<option> Sparare </option>
 			</select>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-3">
             <select type="text" class="form-control" name="isbn" placeholder="ISBN" />
       <option selected disabled hidden>Välj segment</option>
-			<option> Hög </option>
-			<option> Låg </option>
+			<option> Hog </option>
+			<option> Medel </option>
+      <option> Lag </option>
+      <option> Kvinna </option>
+      <option> Man </option>
 			</select>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-3">
             <select type="text" class="form-control" name="price" placeholder="Price" />
       <option selected disabled hidden>Välj Aktör</option>
-			<option> PM </option>
-			<option> AMF </option>
+			<option> Fortroende for AMF </option>
+			<option> Fortroende for Arbetsformedlingen </option>
+      <option>Kannedom om CSN</option>
+      <option>Pensionsmyndigheten ar kunniga</option>
+      <option>Pensionsmyndigheten informerar om pensionen på ett satt som ar relevant for mig</option>
 			</select>
         </div>
         <div class="col-xs-1">
             <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+        </div>
+        <div class="col-xs-0">
+          <svg width="35" height="35">
+            <rect width="35" height="35" style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(0,0,0)" />
+          </svg>
         </div>
     </div>
     <!-- get rid of submit function if possible
@@ -193,7 +216,11 @@ function get_primary_lineset(){
                     .filter(function(){return $.trim($(this).val()).length == 0})
                     .length == 0){
 
-                      alert("draw1");
+                      var kund = $(".form-group select[name ^= 'book[0].title'").val(),
+                          segment = $(".form-group select[name ^= 'book[0].isbn'").val()
+                          nyckel = $(".form-group select[name ^= 'book[0].price'").val();
+
+                      drawFun(nyckel, segment, kund);
                     }
                 } else {
                   //if key is missing push object to array
@@ -239,8 +266,13 @@ $(document).ready(function() {
                   if($(".form-group select[name ^= 'book["+ bookIndex +"'")
                     .filter(function(){return $.trim($(this).val()).length == 0})
                     .length == 0){
+                      var kund = $(".form-group select[name ^= 'book["+ bookIndex +"].title'").val(),
+                          segment = $(".form-group select[name ^= 'book["+ bookIndex +"].isbn'").val()
+                          nyckel = $(".form-group select[name ^= 'book["+ bookIndex +"].price'").val();
 
-                      alert("draw1");
+                          drawFun(nyckel, segment, kund);
+
+                      //alert("draw1");
                     }
                 } else {
                   //if key is missing push object to array

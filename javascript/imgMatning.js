@@ -1,6 +1,6 @@
 svg = d3.select("svg");
 
-var data = [{x:2012, y:100}, {x:2013, y:300}, {x:2016, y:200}]
+var data = [{x:2011, y:100}, {x:2015, y:0}]
 
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -57,8 +57,34 @@ g.selectAll(".circles")
       .attr("class", "line")
       .attr("d", line);
 
+// Draw function
+function drawFun(nyckel, segment, kund){
+	//var nyckel = "Fortroende for AMF",
+	//		segment = "Hog",
+	//		kund = "Pensionar";
 
-/*
+	//filter data
+	var dat = data.filter(function(d){return d.Nyckeltal == nyckel})
+
+	dat.forEach(function(d) {
+			d.x = parseTime(d.Ar);
+			d.y = d[kund + segment]
+	});
+
+g.append("path")
+		.data([dat])
+		.attr("class", "line")
+		.attr("id", nyckel+segment+kund)
+		.attr("opacity", 0)
+		.attr("d", line)
+		.transition()
+		.attr("opacity", 1);
+}
+
+
+
+
+// load data from server on startup
 window.onload = function() { init() };
 
 	  //var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
@@ -71,6 +97,5 @@ window.onload = function() { init() };
 	  }
 
 function showInfo(data, tabletop) {
-
+	window.data = data
 };
-*/
