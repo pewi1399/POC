@@ -14,6 +14,11 @@ var g = svg.append("g")
 // parse the date / time
 var parseTime = d3.timeParse("%Y");
 
+// format the data
+data.forEach(function(d) {
+		d.x = parseTime(d.x);
+});
+
 // set the ranges
 var x = d3.scaleTime().range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
@@ -46,16 +51,11 @@ g.selectAll(".circles")
 	.attr("cy", function(d){ return y(d.y);})
 	.attr("r", 5);
 
-
-g.selectAll(".line")
-	.data(data)
-	.enter()
-	.append("circle")
-	.attr("class", "circles")
-	.attr("cx", function(d){ return d.x;})
-	.attr("cy", function(d){ return d.y;})
-	.attr("r", 5);
-
+	// Add the valueline path.
+  g.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("d", line);
 
 
 /*
