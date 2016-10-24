@@ -25,6 +25,16 @@ div.ex2 {
     margin: auto;
     border: 3px solid #73AD21;
 }
+
+.axis--x path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
 </style>
   </head>
 
@@ -53,11 +63,11 @@ Välj ut element
 
  var alternatives = [a1, a2, a3]
 
- var data1 = {name:"book[1]", x:12}
- var data2 = {name:"book[1]", y:20}
- var data3 = {name:"book[2]", x:10}
+// var data1 = {name:"book[1]", x:12}
+// var data2 = {name:"book[1]", y:20}
+// var data3 = {name:"book[2]", x:10}
 
-var dataset = [{name:"book[1]", x:12},{name:"book[2]", x:1, y:12}];
+var dataset = []//[{name:"book[1]", x:12},{name:"book[2]", x:1, y:12}];
 
 
 var topDiv = d3.select("#dropList")
@@ -98,7 +108,6 @@ function get_primary_lineset(){
   </script>
 <div class="ex2">
 	<svg width="1200" height="410">
-	 <rect x="10" y="10" width="1180" height="400" fill = "white"/>
 	</svg>
 <div>
 
@@ -108,15 +117,15 @@ function get_primary_lineset(){
         <div class="col-xs-4">
             <select type="text" class="form-control" name="book[0].title"  id="book[0].title" placeholder="Kundtyp" />
 		          <option selected disabled hidden>Välj Kundtyp</option>
-        			<option> Kundtyp1 </option>
-        			<option> Kundtyp2 </option>
+        			<option> Pensionär </option>
+        			<option> Sparare </option>
             </select>
         </div>
         <div class="col-xs-4">
             <select type="text" class="form-control" name="book[0].isbn" placeholder="ISBN" />
               <option selected disabled hidden>Välj Segment</option>
-        			<option> Segment1 </option>
-        			<option> Segment2 </option>
+        			<option> Hög </option>
+        			<option> Låg </option>
             </select>
         </div>
         <div class="col-xs-2">
@@ -136,22 +145,22 @@ function get_primary_lineset(){
         <div class="col-xs-4 col-xs-offset-1">
             <select type="text" class="form-control" name="title" placeholder="Title" />
       <option selected disabled hidden>Välj kundtyp</option>
-			<option> Kundtyp1 </option>
-			<option> Kundtyp2 </option>
+			<option> Pensionär </option>
+			<option> Sparare </option>
 			</select>
         </div>
         <div class="col-xs-4">
             <select type="text" class="form-control" name="isbn" placeholder="ISBN" />
       <option selected disabled hidden>Välj segment</option>
-			<option> Segment1 </option>
-			<option> Segment2 </option>
+			<option> Hög </option>
+			<option> Låg </option>
 			</select>
         </div>
         <div class="col-xs-2">
             <select type="text" class="form-control" name="price" placeholder="Price" />
       <option selected disabled hidden>Välj Aktör</option>
-			<option> Aktör1 </option>
-			<option> Aktör2 </option>
+			<option> PM </option>
+			<option> AMF </option>
 			</select>
         </div>
         <div class="col-xs-1">
@@ -178,6 +187,14 @@ function get_primary_lineset(){
                   var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
                   // update any existing key value pair, add any non existant
                   $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
+
+                  // call d3 to draw line if set is complete
+                  if($(".form-group select[name ^= 'book["+ 0 +"'")
+                    .filter(function(){return $.trim($(this).val()).length == 0})
+                    .length == 0){
+
+                      alert("draw1");
+                    }
                 } else {
                   //if key is missing push object to array
                   dataset.push({name:$(this).attr("name").substr(0,7)})
@@ -217,6 +234,14 @@ $(document).ready(function() {
                   var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
                   // update any existing key value pair, add any non existant
                   $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
+
+                  // call d3 to draw line if set is complete
+                  if($(".form-group select[name ^= 'book["+ bookIndex +"'")
+                    .filter(function(){return $.trim($(this).val()).length == 0})
+                    .length == 0){
+
+                      alert("draw1");
+                    }
                 } else {
                   //if key is missing push object to array
                   dataset.push({name:$(this).attr("name").substr(0,7)})
@@ -267,5 +292,10 @@ $("#selector1").select2()
 $("#form-control input-sm select2-multiple").select2()
 </script>
 
+<script type="text/javascript" src="javascript/imgMatning.js"></script>
+
 </body>
 $(".form-group select[name ^= 'book[1']")
+
+find out if form is unfilled
+$(".form-group select[name ^= 'book[1'").filter(function(){return $.trim($(this).val()).length == 0}).length == 0
