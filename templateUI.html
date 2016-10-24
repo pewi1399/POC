@@ -186,7 +186,7 @@ function get_primary_lineset(){
         </div>
         <div class="col-xs-0">
           <svg width="35" height="35">
-            <rect width="35" height="35" style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(0,0,0)" />
+            <rect width="35" height="35" name = "legend" fill = "white" stroke-width = 3 stroke = "black" />
           </svg>
         </div>
     </div>
@@ -247,7 +247,8 @@ $(document).ready(function() {
             $clone
                 .find('[name="title"]').attr('name', 'book[' + bookIndex + '].title').end()
                 .find('[name="isbn"]').attr('name', 'book[' + bookIndex + '].isbn').end()
-                .find('[name="price"]').attr('name', 'book[' + bookIndex + '].price').end();
+                .find('[name="price"]').attr('name', 'book[' + bookIndex + '].price').end()
+                .find('[name="legend"]').attr('name', 'book[' + bookIndex + '].legend').end();
 
             // Add new fields
             // and listeners for changes in document
@@ -270,7 +271,13 @@ $(document).ready(function() {
                           segment = $(".form-group select[name ^= 'book["+ bookIndex +"].isbn'").val()
                           nyckel = $(".form-group select[name ^= 'book["+ bookIndex +"].price'").val();
 
+                          var color = d3.scaleLinear()
+                              .domain([0, 100])
+                              .range(["brown", "steelblue"])
+                              .interpolate(d3.interpolateCubehelix.gamma(3));
+
                           drawFun(nyckel, segment, kund);
+                          $("svg rect[name ^= 'book[" + bookIndex + "].legend']").attr("fill", color(Math.round(Math.random()*100)/100))
 
                       //alert("draw1");
                     }
