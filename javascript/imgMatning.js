@@ -58,7 +58,7 @@ g.selectAll(".circles")
       .attr("d", line);
 
 // Draw function
-function drawFun(nyckel, segment, kund){
+function drawFun(nyckel, segment, kund, color){
 	//var nyckel = "Fortroende for AMF",
 	//		segment = "Hog",
 	//		kund = "Pensionar";
@@ -77,6 +77,7 @@ g.append("path")
 		.attr("id", nyckel+segment+kund)
 		.attr("opacity", 0)
 		.attr("d", line)
+    .attr("stroke", color)
 		.transition()
 		.attr("opacity", 1);
 }

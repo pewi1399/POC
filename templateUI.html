@@ -32,7 +32,6 @@ div.ex2 {
 
 .line {
   fill: none;
-  stroke: steelblue;
   stroke-width: 1.5px;
 }
 </style>
@@ -273,14 +272,15 @@ $(document).ready(function() {
 
                           var color = d3.scaleLinear()
                               .domain([0, 100])
-                              .range(["brown", "steelblue"])
+                              .range(["red", "violet"])
                               .interpolate(d3.interpolateCubehelix.gamma(3));
+                          var rainbow = d3.scaleSequential(d3.interpolateRainbow);
 
-                          drawFun(nyckel, segment, kund);
-                          $("svg rect[name ^= 'book[" + bookIndex + "].legend']").attr("fill", color(Math.round(Math.random()*100)/100))
+                          var col = rainbow(Math.random());
+                          drawFun(nyckel, segment, kund, col);
+                          $("svg rect[name ^= 'book[" + bookIndex + "].legend']").attr("fill", col)
 
-                      //alert("draw1");
-                    }
+                      }//alert("draw1");
                 } else {
                   //if key is missing push object to array
                   dataset.push({name:$(this).attr("name").substr(0,7)})
