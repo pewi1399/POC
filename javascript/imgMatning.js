@@ -69,7 +69,7 @@ g.selectAll(".texts")
 /*
 // print data
 legends = d3.selectAll(".legendbox").data([1).append("text")
-legends.attr("x", 5).attr("y", 35).text("-0.6")
+legends.attr("x", 5).attr("y", 35).text("-0.6").attr("font-size", "11px")
 */
 
 // Draw function
