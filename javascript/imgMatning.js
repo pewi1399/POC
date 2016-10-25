@@ -66,6 +66,12 @@ g.selectAll(".texts")
       .attr("class", "line")
       .attr("d", line);
 
+/*
+// print data
+legends = d3.selectAll(".legendbox").data([1).append("text")
+legends.attr("x", 5).attr("y", 35).text("-0.6")
+*/
+
 // Draw function
 function drawFun(nyckel, segment, kund, color){
 	//var nyckel = "Fortroende for AMF",
@@ -98,7 +104,7 @@ A.
 --- 2. Fix coloration problems ---
 
 B.
-  1. Add text marker to rects.
+--- 1. Add text marker to rects. ---
   2. Add overlay and markers to lines. Like in JP-morgan example.
   3. Bind overlay to marker text.
 */
