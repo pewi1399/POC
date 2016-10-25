@@ -209,7 +209,7 @@
 // city is a variable that contains selection for the three lines
 // cities is a variable JSON that contains threethe actual timeseries
 
-// add a placeholder for the effects (PW)
+    // add a placeholder for the effects (PW)
     var mouseG = svg.append("g")
       .attr("class", "mouse-over-effects");
 
@@ -222,13 +222,14 @@
     // variable lines contain the actual lines (PW)
     var lines = document.getElementsByClassName('line');
 
-  // create g element for every line ()
+    // create g element for every line ()
     var mousePerLine = mouseG.selectAll('.mouse-per-line')
       .data(cities)
       .enter()
       .append("g")
       .attr("class", "mouse-per-line");
 
+    // append circles for mouseover
     mousePerLine.append("circle")
       .attr("r", 7)
       .style("stroke", function(d) {
@@ -238,9 +239,11 @@
       .style("stroke-width", "1px")
       .style("opacity", "0");
 
+    // add text text overlay
     mousePerLine.append("text")
       .attr("transform", "translate(10,3)");
 
+    // add mouseover reactivity to rect so that ruler only shows on canvas hover
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', width) // can't catch mouse events on a g element
       .attr('height', height)
