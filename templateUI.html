@@ -254,6 +254,8 @@ $(document).ready(function() {
             $('#bookForm')
               $('select[name^="book[' + bookIndex + ']"').on('change',function(){
                 var existing_keys = dataset.map(function(d) { return d["name"]; });
+                drawerIndex = $(this).attr("name").replace(/[^\d-]/g, '');
+
                 // test if key is already present in set of lines to be drawn.
                 if(existing_keys.indexOf($(this).attr("name").substr(0,7))!=-1){
                   // find index of key and exend that part of df with custom json
@@ -263,12 +265,12 @@ $(document).ready(function() {
                   $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
 
                   // call d3 to draw line if set is complete
-                  if($(".form-group select[name ^= 'book["+ bookIndex +"'")
+                  if($(".form-group select[name ^= 'book["+ drawerIndex +"'")
                     .filter(function(){return $.trim($(this).val()).length == 0})
                     .length == 0){
-                      var kund = $(".form-group select[name ^= 'book["+ bookIndex +"].title'").val(),
-                          segment = $(".form-group select[name ^= 'book["+ bookIndex +"].isbn'").val()
-                          nyckel = $(".form-group select[name ^= 'book["+ bookIndex +"].price'").val();
+                      var kund = $(".form-group select[name ^= 'book["+ drawerIndex +"].title'").val(),
+                          segment = $(".form-group select[name ^= 'book["+ drawerIndex +"].isbn'").val()
+                          nyckel = $(".form-group select[name ^= 'book["+ drawerIndex +"].price'").val();
 
                           var color = d3.scaleLinear()
                               .domain([0, 100])
@@ -278,7 +280,7 @@ $(document).ready(function() {
 
                           var col = rainbow(Math.random());
                           drawFun(nyckel, segment, kund, col);
-                          $("svg rect[name ^= 'book[" + bookIndex + "].legend']").attr("fill", col)
+                          $("svg rect[name ^= 'book[" + drawerIndex + "].legend']").attr("fill", col)
 
                       }//alert("draw1");
                 } else {

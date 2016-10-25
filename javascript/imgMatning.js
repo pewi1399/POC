@@ -51,6 +51,15 @@ g.selectAll(".circles")
 	.attr("cy", function(d){ return y(d.y);})
 	.attr("r", 5);
 
+g.selectAll(".texts")
+	.data([1])
+	.enter()
+	.append("text")
+	.attr("class", "texts")
+	.attr("x", x(parseTime("2012")))
+	.attr("y", y(50))
+	.text("radoo radoo!");
+
 	// Add the valueline path.
   g.append("path")
       .data([data])
@@ -82,8 +91,17 @@ g.append("path")
 		.attr("opacity", 1);
 }
 
+// outline
+/*
+A.
+--- 1. Fix dataset update issues ---
+--- 2. Fix coloration problems ---
 
-
+B.
+  1. Add text marker to rects.
+  2. Add overlay and markers to lines. Like in JP-morgan example.
+  3. Bind overlay to marker text.
+*/
 
 // load data from server on startup
 window.onload = function() { init() };
