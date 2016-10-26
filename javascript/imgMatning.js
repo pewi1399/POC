@@ -1,5 +1,7 @@
 svg = d3.select("svg");
 
+svg.on("click", function(){overlay()})
+
 var data = [{x:2011, y:100}, {x:2015, y:0}]
 
 // set the dimensions and margins of the graph
@@ -60,12 +62,6 @@ g.selectAll(".texts")
 	.attr("y", y(50))
 	.text("radoo radoo!");
 
-	// Add the valueline path.
-  g.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("d", line);
-
 /*
 // print data
 legends = d3.selectAll(".legendbox").data([1).append("text")
@@ -86,15 +82,17 @@ function drawFun(nyckel, segment, kund, color){
 			d.y = d[kund + segment]
 	});
 
-g.append("path")
-		.data([dat])
-		.attr("class", "line")
-		.attr("id", nyckel+segment+kund)
-		.attr("opacity", 0)
-		.attr("d", line)
-    .attr("stroke", color)
-		.transition()
-		.attr("opacity", 1);
+  var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  g.append("path")
+  		.data([dat])
+  		.attr("class", "line")
+  		.attr("id", nyckel+segment+kund)
+  		.attr("opacity", 0)
+  		.attr("d", line)
+      .attr("stroke", color)
+  		.transition()
+  		.attr("opacity", 1);
 }
 //--------------------------- mouseover effects --------------------------------
 //-------------------------------- line ----------------------------------------
@@ -142,18 +140,19 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 });
 //------------------------------ end line --------------------------------------
 //------------------------------ markers ---------------------------------------
-// *** of secondary importance ***
 // variable lines contain the actual lines (PW)
 function getmarkers(){
   var lines = document.getElementsByClassName('line');
-/*
+
+  //index the number of lines as a temporary data binding
+  for (var i=d3.selectAll(".line").size(), index=[]; i--;) index.push(i);
+
   // create g element for every line ()
   var mousePerLine = mouseG.selectAll('.mouse-per-line')
-    .data(cities)
+    .data(index.reverse())
     .enter()
     .append("g")
     .attr("class", "mouse-per-line");
-
   // append circles for mouseover
   mousePerLine.append("circle")
     .attr("r", 7)
@@ -164,12 +163,11 @@ function getmarkers(){
     .style("stroke-width", "1px")
     .style("opacity", "0");
 
+/*
   // add text text overlay
   mousePerLine.append("text")
     .attr("transform", "translate(10,3)");
-    // *** end of seccndary importance ***
 */
-return lines;
 }
 //---------------------------- end markers -------------------------------------
 //------------------------- end mouseover effects ------------------------------
@@ -200,4 +198,5 @@ window.onload = function() { init() };
 
 function showInfo(data, tabletop) {
 	window.data = data
+  console.log("ready")
 };

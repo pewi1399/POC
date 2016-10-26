@@ -220,7 +220,7 @@ function get_primary_lineset(){
                           segment = $(".form-group select[name ^= 'book_0_.isbn'").val()
                           nyckel = $(".form-group select[name ^= 'book_0_.price'").val();
 
-                      drawFun(nyckel, segment, kund);
+                      drawFun_tmp(nyckel, segment, kund);
                     }
                 } else {
                   //if key is missing push object to array
@@ -281,7 +281,7 @@ $(document).ready(function() {
                           var rainbow = d3.scaleSequential(d3.interpolateRainbow);
 
                           var col = rainbow(Math.random());
-                          drawFun(nyckel, segment, kund, col);
+                          drawFun_tmp(nyckel, segment, kund, col);
                           $("svg rect[name ^= 'book_" + drawerIndex + "_.legend']").attr("fill", col)
 
                       }//alert("draw1");
@@ -336,6 +336,7 @@ $("#form-control input-sm select2-multiple").select2()
 </script>
 
 <script type="text/javascript" src="javascript/imgMatning.js"></script>
+<script type="text/javascript" src="sandbox.js"></script>
 
 </body>
 $(".form-group select[name ^= 'book_1']")

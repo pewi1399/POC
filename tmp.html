@@ -219,7 +219,6 @@
       .style("stroke-width", "1px")
       .style("opacity", "0");
 
-/*
   // *** of secondary importance ***
     // variable lines contain the actual lines (PW)
     var lines = document.getElementsByClassName('line');
@@ -245,7 +244,6 @@
     mousePerLine.append("text")
       .attr("transform", "translate(10,3)");
   // *** end of seccndary importance ***
-*/
 
     // add mouseover reactivity to rect so that ruler only shows on canvas hover
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
@@ -256,22 +254,18 @@
       .on('mouseout', function() { // on mouse out hide line, circles and text
         d3.select(".mouse-line")
           .style("opacity", "0");
-          /*
         d3.selectAll(".mouse-per-line circle")
           .style("opacity", "0");
         d3.selectAll(".mouse-per-line text")
           .style("opacity", "0");
-          */
       })
       .on('mouseover', function() { // on mouse in show line, circles and text
         d3.select(".mouse-line")
           .style("opacity", "1");
-          /*
         d3.selectAll(".mouse-per-line circle")
           .style("opacity", "1");
         d3.selectAll(".mouse-per-line text")
           .style("opacity", "1");
-          */
       })
       .on('mousemove', function() { // mouse moving over canvas
         var mouse = d3.mouse(this);
@@ -281,18 +275,21 @@
             d += " " + mouse[0] + "," + 0;
             return d;
           });
-/*
+
 // function for intersection markers
         d3.selectAll(".mouse-per-line")
           .attr("transform", function(d, i) {
-            console.log(width/mouse[0])
-            var xDate = x.invert(mouse[0]),
-                bisect = d3.bisector(function(d) { return d.date; }).right;
-                idx = bisect(d.values, xDate);
+            //for each datapoint get the y value for the corresponding x value of
+            // the cursor stored in first position of array "mouse"
 
-            var beginning = 0,
-                end = lines[i].getTotalLength(),
-                target = null;
+            console.log(width/mouse[0])
+            var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
+                bisect = d3.bisector(function(d) { return d.date; }).right; // ?
+                idx = bisect(d.values, xDate); //?
+
+            var beginning = 0, //start searching at zero
+                end = lines[i].getTotalLength(), // entire length of line defines area of search
+                target = null; // this we would like to find out
 
             while (true){
               target = Math.floor((beginning + end) / 2);
@@ -310,7 +307,6 @@
 
             return "translate(" + mouse[0] + "," + pos.y +")";
           });
-          */
       });
 
   </script>
