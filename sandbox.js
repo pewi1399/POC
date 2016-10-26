@@ -123,8 +123,14 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 
             console.log(width/mouse[0])
             var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
-                bisect = d3.bisector(function(d) { return d.date; }).right; // ?
-                idx = bisect(d.values, xDate); //?
+                bisect = d3.bisector(function(d) { return d.x; }).right; //
+                idx = bisect(d.values, xDate); //
+
+            // bisectors work like in the following example:
+            // var bisect = d3.bisector(function(d) { return d.x; }).right;
+            // above bisector will find any numbers index where it inserted into array "x"
+            // var gg = [{x:10},{x:15},{x:20}]
+            // bisect(gg, 17); // ger index = 2 dvs mellan 15 och 20
 
             var beginning = 0, //start searching at zero
                 end = lines[i].getTotalLength(), // entire length of line defines area of search
