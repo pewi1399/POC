@@ -96,6 +96,83 @@ g.append("path")
 		.transition()
 		.attr("opacity", 1);
 }
+//--------------------------- mouseover effects --------------------------------
+//-------------------------------- line ----------------------------------------
+// add a placeholder for the effects (PW)
+var mouseG = svg.append("g")
+  .attr("class", "mouse-over-effects");
+
+mouseG.append("path") // this is the black vertical line to follow mouse
+  .attr("class", "mouse-line")
+  .style("stroke", "black")
+  .style("stroke-width", "1px")
+  .style("opacity", "0");
+
+
+mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+  .attr('width', width) // can't catch mouse events on a g element
+  .attr('height', height)
+  .attr('fill', 'none')
+  .attr('pointer-events', 'all')
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  .on('mouseout', function() { // on mouse out hide line, circles and text
+    d3.select(".mouse-line")
+      .style("opacity", "0");
+    d3.selectAll(".mouse-per-line circle")
+      .style("opacity", "0");
+    d3.selectAll(".mouse-per-line text")
+      .style("opacity", "0");
+  })
+  .on('mouseover', function() { // on mouse in show line, circles and text
+    d3.select(".mouse-line")
+      .style("opacity", "1");
+    d3.selectAll(".mouse-per-line circle")
+      .style("opacity", "1");
+    d3.selectAll(".mouse-per-line text")
+      .style("opacity", "1");
+  })
+  .on('mousemove', function() { // mouse moving over canvas
+    var mouse = d3.mouse(this);
+    d3.select(".mouse-line")
+      .attr("d", function() {
+        var d = "M" + mouse[0] + "," + height;
+        d += " " + mouse[0] + "," + 0;
+        return d;
+      });
+});
+//------------------------------ end line --------------------------------------
+//------------------------------ markers ---------------------------------------
+// *** of secondary importance ***
+// variable lines contain the actual lines (PW)
+function getmarkers(){
+  var lines = document.getElementsByClassName('line');
+/*
+  // create g element for every line ()
+  var mousePerLine = mouseG.selectAll('.mouse-per-line')
+    .data(cities)
+    .enter()
+    .append("g")
+    .attr("class", "mouse-per-line");
+
+  // append circles for mouseover
+  mousePerLine.append("circle")
+    .attr("r", 7)
+    .style("stroke", function(d) {
+      return color(d.name);
+    })
+    .style("fill", "none")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
+
+  // add text text overlay
+  mousePerLine.append("text")
+    .attr("transform", "translate(10,3)");
+    // *** end of seccndary importance ***
+*/
+return lines;
+}
+//---------------------------- end markers -------------------------------------
+//------------------------- end mouseover effects ------------------------------
 
 // outline
 /*
