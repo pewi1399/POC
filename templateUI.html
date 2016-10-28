@@ -285,8 +285,8 @@ $(document).ready(function() {
                           var rainbow = d3.scaleSequential(d3.interpolateRainbow);
 
                           var col = rainbow(Math.random());
-                          drawFun_tmp(nyckel, segment, kund, col);
-                          $("svg rect[name ^= 'book_" + drawerIndex + "_.legend']").attr("fill", col)
+                          drawFun_tmp(nyckel, segment, kund, col, drawerIndex);
+                          //$("svg rect[name ^= 'book_" + drawerIndex + "_.legend']").attr("fill", col)
 
                       }//alert("draw1");
                 } else {

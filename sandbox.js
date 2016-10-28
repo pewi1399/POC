@@ -1,5 +1,5 @@
 // Draw function
-function drawFun_tmp(nyckel, segment, kund, color){
+function drawFun_tmp(nyckel, segment, kund, color, drawerIndex){
 	//var nyckel = "Fortroende for AMF",
 	//		segment = "Hog",
 	//		kund = "Pensionar";
@@ -19,6 +19,7 @@ window.tmp_segment = segment
     // i steg ett sparas namn och en subarray
     return {
       name: name,
+			color:color,
       values: dat.map(function(d) {
         return {
           x: parseTime(d.Ar),
@@ -42,7 +43,9 @@ window.tmp_segment = segment
     })
     .attr("stroke", color);
 
-
+var legends = d3.selectAll("[name = 'book_"+drawerIndex+"_.legend']")
+								.attr("fill", color)
+								//.data([cities[0]])
 }
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- mouseover effects --------------------------------
@@ -107,7 +110,7 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
   mousePerLine.append("circle")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("r", 7)
-    .style("stroke", "red")
+    .attr("stroke", function(d){ return d.color;})
     .style("fill", "none")
     .style("stroke-width", "1px")
     .style("opacity", "0");
@@ -176,3 +179,5 @@ var gg = [{x:d.values[0].x, y:d.values[0].y}
 					,{x:d.values[5].x, y:d.values[5].y}
 					]
 */
+
+d3.selectAll("")

@@ -47,6 +47,7 @@ g.append("g")
   .call(d3.axisBottom(x));
 
 // Draw placeholders just for fun
+/*
 g.selectAll(".circles")
 	.data(data)
 	.enter()
@@ -55,7 +56,7 @@ g.selectAll(".circles")
 	.attr("cx", function(d){ return x(d.x);})
 	.attr("cy", function(d){ return y(d.y);})
 	.attr("r", 5);
-
+*/
 /*
 g.selectAll(".texts")
 	.data([1])
