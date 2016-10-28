@@ -24,7 +24,7 @@ window.tmp_segment = segment
           x: parseTime(d.Ar),
           y: +d[tmp_kund+tmp_segment]
         };
-      })
+      }).sort(function(d){ return d.x;})
     };
   });
 
@@ -121,10 +121,11 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
             //for each datapoint get the y value for the corresponding x value of
             // the cursor stored in first position of array "mouse"
 
-            console.log(width/mouse[0])
+            //console.log(width/mouse[0])
             var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
                 bisect = d3.bisector(function(d) { return d.x; }).right; //
                 idx = bisect(d.values, xDate); //
+							console.log(idx)
 
             // bisectors work like in the following example:
             // var bisect = d3.bisector(function(d) { return d.x; }).right;
@@ -155,3 +156,20 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 });
 //------------------------------ end line --------------------------------------
 //------------------------------ markers ---------------------------------------
+/*
+// bisect problems
+// är det fel på sorteringen?
+d.values.sort(function(d){return d.x})
+
+//är det fel på datumformaten?
+d.values[0].x < parseTime(2015)
+
+// testa att definiera om array
+var gg = [{x:d.values[0].x, y:d.values[0].y}
+					,{x:d.values[1].x, y:d.values[1].y}
+					,{x:d.values[2].x, y:d.values[2].y}
+					,{x:d.values[3].x, y:d.values[3].y}
+					,{x:d.values[4].x, y:d.values[4].y}
+					,{x:d.values[5].x, y:d.values[5].y}
+					]
+*/
