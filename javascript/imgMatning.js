@@ -27,6 +27,7 @@ var y = d3.scaleLinear().range([height, 0]);
 
 // define the line
 var line = d3.line()
+    .curve(d3.curveBasis)
     .x(function(d) { return x(d.x); })
     .y(function(d) { return y(d.y); });
 
@@ -53,6 +54,7 @@ g.selectAll(".circles")
 	.attr("cy", function(d){ return y(d.y);})
 	.attr("r", 5);
 
+/*
 g.selectAll(".texts")
 	.data([1])
 	.enter()
@@ -61,7 +63,7 @@ g.selectAll(".texts")
 	.attr("x", x(parseTime("2012")))
 	.attr("y", y(50))
 	.text("radoo radoo!");
-
+*/
 /*
 // print data
 legends = d3.selectAll(".legendbox").data([1).append("text")
@@ -99,13 +101,13 @@ function drawFun(nyckel, segment, kund, color){
 // add a placeholder for the effects (PW)
 var mouseG = svg.append("g")
   .attr("class", "mouse-over-effects");
-
+/*
 mouseG.append("path") // this is the black vertical line to follow mouse
   .attr("class", "mouse-line")
   .style("stroke", "black")
   .style("stroke-width", "1px")
   .style("opacity", "0");
-
+*/
 
 mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
   .attr('width', width) // can't catch mouse events on a g element

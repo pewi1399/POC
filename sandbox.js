@@ -52,13 +52,13 @@ window.tmp_segment = segment
 // add a placeholder for the effects (PW)
 var mouseG = svg.append("g")
   .attr("class", "mouse-over-effects");
-
+/*
 mouseG.append("path") // this is the black vertical line to follow mouse
   .attr("class", "mouse-line")
   .style("stroke", "black")
   .style("stroke-width", "1px")
   .style("opacity", "0");
-
+*/
 
 mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
   .attr('width', width) // can't catch mouse events on a g element
