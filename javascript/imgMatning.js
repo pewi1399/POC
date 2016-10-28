@@ -2,7 +2,7 @@ svg = d3.select("svg");
 
 svg.on("click", function(){overlay()})
 
-var data = [{x:2011, y:100}, {x:2015, y:0}]
+var data = [{x:2010, y:100}, {x:2015, y:0}]
 
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -35,14 +35,16 @@ var line = d3.line()
 x.domain(d3.extent(data, function(d) { return d.x; }));
 y.domain([0, d3.max(data, function(d) { return d.y; })]);
 
+// Add the Y Axis
+g.append("g")
+    .call(d3.axisLeft(y)
+            .ticks(5, "s")
+            .tickSizeInner(-width)
+          );
 // Add the X Axis
 g.append("g")
   .attr("transform", "translate(0," + height + ")")
   .call(d3.axisBottom(x));
-
-// Add the Y Axis
-g.append("g")
-    .call(d3.axisLeft(y));
 
 // Draw placeholders just for fun
 g.selectAll(".circles")

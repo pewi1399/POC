@@ -35,6 +35,7 @@ window.tmp_segment = segment
 
   city.append("path")
     .attr("class", "line")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("id", nyckel+segment+kund)
     .attr("d", function(d) {
       return line(d.values);
@@ -65,7 +66,7 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
   .attr('height', height)
   .attr('fill', 'none')
   .attr('pointer-events', 'all')
-  //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .on('mouseout', function() { // on mouse out hide line, circles and text
     d3.select(".mouse-line")
       .style("opacity", "0");
@@ -104,6 +105,7 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 
   // append circles for mouseover
   mousePerLine.append("circle")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("r", 7)
     .style("stroke", "red")
     .style("fill", "none")
@@ -112,7 +114,8 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 
   // add text text overlay
   mousePerLine.append("text")
-    .attr("transform", "translate(10,3)");
+		.attr("transform", "translate(" + (margin.left+10)+ "," + (margin.top+3) + ")");
+    //.attr("transform", "translate(10,3)");
 // *** end of seccndary importance ***
 
 // function for intersection markers
