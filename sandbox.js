@@ -44,8 +44,11 @@ window.tmp_segment = segment
     .attr("stroke", color);
 
 var legends = d3.selectAll("[name = 'book_"+drawerIndex+"_.legend']")
-								.attr("fill", color)
+								.attr("fill", color);
 								//.data([cities[0]])
+
+//Push reactive box to back
+d3.selectAll(".mouse-over-effects").raise()
 }
 ////////////////////////////////////////////////////////////////////////////////
 //--------------------------- mouseover effects --------------------------------
@@ -157,6 +160,9 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
             d3.select(this).select('text')
               .text(y.invert(pos.y).toFixed(2));
 
+						d3.selectAll("[name $='"+(i+1)+"_.text']").attr("fill", "grey") // a bit of a hack! (PW)
+              .text(y.invert(pos.y).toFixed(2));
+
             return "translate(" + mouse[0] + "," + pos.y +")";
           });
 });
@@ -180,4 +186,7 @@ var gg = [{x:d.values[0].x, y:d.values[0].y}
 					]
 */
 
-d3.selectAll("")
+//d3.selectAll("")
+//d3.selectAll("[name $= text]").attr("fill", "firebrick").text("ff")
+//download data!
+//http://stackoverflow.com/questions/20158236/export-d3-generated-html-table-as-csv-must-work-on-ie-too
