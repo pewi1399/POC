@@ -138,7 +138,7 @@ function get_primary_lineset(){
         <div class="col-xs-3">
             <select type="text" class="form-control" name="book_0_.price" placeholder="Price" />
               <option selected disabled hidden>Välj Aktör</option>
-              <option> Fortroende for AMF </option>
+              <option> Förtroende för AMF </option>
 			        <option> Fortroende for Arbetsformedlingen </option>
               <option>Kannedom om CSN</option>
               <option>Pensionsmyndigheten ar kunniga</option>
@@ -150,7 +150,8 @@ function get_primary_lineset(){
         </div>
         <div class="col-xs-0">
           <svg width="35" height="35">
-            <rect width="35" height="35" style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(0,0,0)" />
+            <rect width="35" height="22" name = "book_0_.legend" fill = "white" stroke-width = 3 stroke = "black" />
+            <text x = "5" y = "34" name = "book_0_.text" font-size = "11px">0.00</text>
           </svg>
         </div>
     </div>
@@ -203,6 +204,21 @@ function get_primary_lineset(){
   -->
 </form>
 
+
+<!-- add row for saving selected data -->
+<form id="download" method="post" class="form-horizontal">
+<div class="form-group">
+  <div class="col-xs-10">
+  </div>
+  <div class="col-xs-1">
+      <button type="button" class="btn btn-default downloadButton">  <i class="fa fa-download" aria-hidden="true"></i> </button>
+  </div>
+  <div class="col-xs-1">
+  </div>
+</div>
+</form>
+
+
 <script>
 
             $('select[name^="book_' + 0 + '"]').on('change',function(){
@@ -224,11 +240,23 @@ function get_primary_lineset(){
                           segment = $(".form-group select[name ^= 'book_0_.isbn'").val()
                           nyckel = $(".form-group select[name ^= 'book_0_.price'").val();
 
-                      drawFun_tmp(nyckel, segment, kund);
+                          var color = d3.scaleLinear()
+                              .domain([0, 100])
+                              .range(["red", "violet"])
+                              .interpolate(d3.interpolateCubehelix.gamma(3));
+                          var rainbow = d3.scaleSequential(d3.interpolateRainbow);
+
+                          var col = rainbow(Math.random());
+                          drawFun_tmp(nyckel, segment, kund, col, 0);
                     }
                 } else {
                   //if key is missing push object to array
                   dataset.push({name:$(this).attr("name").substr(0,7)})
+                  // find index of key and exend that part of df with custom json
+                  var index = existing_keys.indexOf($(this).attr("name").substr(0,7))
+                  var jsonString = '{"' + $(this).attr("name").substr(8,13) + '":"' + $(this).val() + '"}'
+                  // update any existing key value pair, add any non existant
+                  $.extend(dataset[index], dataset[index], JSON.parse(jsonString)); // update existing frame with data
                 };
               });
 
@@ -319,37 +347,24 @@ $(document).ready(function() {
             // Remove element containing the fields
             $row.remove();
 
-            d3.select("[name = ''" + index + "'']").remove()
+            d3.selectAll("[name = '" + index + "']").remove()
+
         });
+
+        $(".downloadButton").on('click', function(){
+
+          JSONToCSVConvertor(data, "download", "date")
+
+        }
+      )
+
+
 });
 </script>
 
 
-<div class="ex1">
-  Placeholder....
-<p>&nbsp;</p>
-  </div>
-
-  <!-- mycket användbart jquery trick $('select[name^="book_1_.title"').val() -->
-
-<script>
-
-$("#select2-multiple-input-sm").select2({
-  theme: "classic"
-})
-$("#select2-single-input-group-sm").select2()
-$("#selector1").select2()
-$("#form-control input-sm select2-multiple").select2()
-</script>
 
 <script type="text/javascript" src="javascript/imgMatning.js"></script>
 <script type="text/javascript" src="sandbox.js"></script>
 
 </body>
-$(".form-group select[name ^= 'book_1']")
-
-find out if form is unfilled
-$(".form-group select[name ^= 'book_1'").filter(function(){return $.trim($(this).val()).length == 0}).length == 0
-
-select in d3 based on attribute
-d3.selectAll("[name = 'book_4_.text']").text("ggg")

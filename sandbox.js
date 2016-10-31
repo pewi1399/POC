@@ -19,7 +19,8 @@ window.tmp_segment = segment
     // i steg ett sparas namn och en subarray
     return {
       name: name,
-			color:color,
+			color: color,
+			index: drawerIndex,
       values: dat.map(function(d) {
         return {
           x: parseTime(d.Ar),
@@ -108,7 +109,8 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
     .data(d3.selectAll(".line").data())
     .enter()
     .append("g")
-    .attr("class", "mouse-per-line");
+    .attr("class", "mouse-per-line")
+		.attr("name", function(d){ return d.index; });
 
   // append circles for mouseover
   mousePerLine.append("circle")
@@ -161,7 +163,7 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
             d3.select(this).select('text')
               .text(y.invert(pos.y).toFixed(2));
 
-						d3.selectAll("[name $='"+(i+1)+"_.text']").attr("fill", "grey") // a bit of a hack! (PW)
+						d3.selectAll("[name $='"+i+"_.text']").attr("fill", "grey") // a bit of a hack! (PW)
               .text(y.invert(pos.y).toFixed(2));
 
             return "translate(" + mouse[0] + "," + pos.y +")";
@@ -191,3 +193,87 @@ var gg = [{x:d.values[0].x, y:d.values[0].y}
 //d3.selectAll("[name $= text]").attr("fill", "firebrick").text("ff")
 //download data!
 //http://stackoverflow.com/questions/20158236/export-d3-generated-html-table-as-csv-must-work-on-ie-too
+
+
+function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+    //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+    var CSV = '';
+    //Set Report title in first row or line
+
+    CSV += ReportTitle + '\r\n\n';
+
+    //This condition will generate the Label/Header
+    if (ShowLabel) {
+        var row = "";
+
+        //This loop will extract the label from 1st index of on array
+        for (var index in arrData[0]) {
+
+            //Now convert each value to string and comma-seprated
+            row += index + ';';
+        }
+
+        row = row.slice(0, -1);
+
+        //append Label row with line break
+        CSV += row + '\r\n';
+    }
+
+    //1st loop is to extract each row
+    for (var i = 0; i < arrData.length; i++) {
+        var row = "";
+
+        //2nd loop will extract each column and convert it in string comma-seprated
+        for (var index in arrData[i]) {
+            row += '"' + arrData[i][index] + '";';
+        }
+
+        row.slice(0, row.length - 1);
+
+        //add a line break after each row
+        CSV += row + '\r\n';
+    }
+
+    if (CSV == '') {
+        alert("Invalid data");
+        return;
+    }
+
+    //Generate a file name
+    var fileName = "MyReport_";
+    //this will remove the blank-spaces from the title and replace it with an underscore
+    fileName += ReportTitle.replace(/ /g,"_");
+
+    //Initialize file format you want csv or xls
+    var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+
+    // Now the little tricky part.
+    // you can use either>> window.open(uri);
+    // but this will not work in some browsers
+    // or you will not get the correct file extension
+
+    //this trick will generate a temp <a /> tag
+    var link = document.createElement("a");
+    link.href = uri;
+
+    //set the visibility hidden so it will not effect on your web-layout
+    link.style = "visibility:hidden";
+    link.download = fileName + ".csv";
+
+    //this part will append the anchor tag and remove it after automatic click
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/*
+$(".form-group select[name ^= 'book_1']")
+
+find out if form is unfilled
+$(".form-group select[name ^= 'book_1'").filter(function(){return $.trim($(this).val()).length == 0}).length == 0
+
+select in d3 based on attribute
+d3.selectAll("[name = 'book_4_.text']").text("ggg")
+*/
