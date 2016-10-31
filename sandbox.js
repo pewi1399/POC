@@ -38,6 +38,7 @@ window.tmp_segment = segment
     .attr("class", "line")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("id", nyckel+segment+kund)
+		.attr("name", drawerIndex)
     .attr("d", function(d) {
       return line(d.values);
     })

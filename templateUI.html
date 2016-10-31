@@ -185,7 +185,7 @@ function get_primary_lineset(){
 			</select>
         </div>
         <div class="col-xs-1">
-            <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+            <button type="button" name = "remove" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
         </div>
         <div class="col-xs-0">
           <svg width="35" height="35" class= "legendbox">
@@ -253,7 +253,8 @@ $(document).ready(function() {
                 .find('[name="isbn"]').attr('name', 'book_' + bookIndex + '_.isbn').end()
                 .find('[name="price"]').attr('name', 'book_' + bookIndex + '_.price').end()
                 .find('[name="text"]').attr('name', 'book_' + bookIndex + '_.text').end()
-                .find('[name="legend"]').attr('name', 'book_' + bookIndex + '_.legend').end();
+                .find('[name="legend"]').attr('name', 'book_' + bookIndex + '_.legend').end()
+                .find('[name="remove"]').attr('name', 'book_' + bookIndex + '_.remove').end();
 
             // Add new fields
             // and listeners for changes in document
@@ -317,6 +318,8 @@ $(document).ready(function() {
 */
             // Remove element containing the fields
             $row.remove();
+
+            d3.select("[name = ''" + index + "'']").remove()
         });
 });
 </script>
