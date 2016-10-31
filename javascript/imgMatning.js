@@ -1,6 +1,7 @@
 svg = d3.select("svg");
 
-svg.on("click", function(){overlay()})
+//https://chartio.com/resources/tutorials/how-to-resize-an-svg-when-the-window-is-resized-in-d3-js
+
 
 var data = [{x:2010, y:100}, {x:2015, y:0}]
 
