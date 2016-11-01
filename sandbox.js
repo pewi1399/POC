@@ -45,6 +45,7 @@ window.tmp_segment = segment
     })
     .attr("stroke", color);
 
+
 var legends = d3.selectAll("[name = 'book_"+drawerIndex+"_.legend']")
 								.attr("fill", color);
 								//.data([cities[0]])
@@ -57,6 +58,10 @@ d3.selectAll(".mouse-over-effects").raise()
 //-------------------------------- line ----------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 
+// Define the div for the tooltip
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
 // add a placeholder for the effects (PW)
 var mouseG = svg.append("g")
@@ -119,7 +124,21 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
     .attr("stroke", function(d){ return d.color;})
     .style("fill", "none")
     .style("stroke-width", "1px")
-    .style("opacity", "0");
+    .style("opacity", "0")
+		.on("mouseover", function(d) {
+
+		div.transition()
+				.duration(200)
+				.style("opacity", .9);
+		div	.html("row one" + "<br/>"  + "row two")
+				.style("left", (d3.event.pageX) + "px")
+				.style("top", (d3.event.pageY - 28) + "px");
+		})
+		.on("mouseout", function(d) {
+		div.transition()
+				.duration(500)
+				.style("opacity", 0);
+		});
 
   // add text text overlay
   mousePerLine.append("text")
