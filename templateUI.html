@@ -112,9 +112,9 @@ function get_primary_lineset(){
   </script>
 <div class="ex2">
 	<svg xmlns="http://www.w3.org/2000/svg"
-    width="860"
+    width="1200"
     height="500"
-    viewBox="0 0 860 500"
+    viewBox="0 0 1200 500"
     preserveAspectRatio="xMinYMin meet">
 	</svg>
 <div>
@@ -357,7 +357,7 @@ $(document).ready(function() {
 
         $(".downloadButton").on('click', function(){
 
-          JSONToCSVConvertor(data, "download", "date")
+          JSONToCSVConvertor(d3.selectAll(".line").data(), "download", "date")
 
         }
       )
