@@ -101,6 +101,12 @@ div.tooltip {
       var xAxis_ordinal = d3.axisBottom()
           .scale(x_ordinal);
 
+      // define the line
+      var line = d3.line()
+          .curve(d3.curveBasis)
+          .x(function(d) { return x(d.x); })
+          .y(function(d) { return y(d.y); });
+
       var svg = d3.select("h3")
     		.append("div")
     		.attr("id","testname")
@@ -124,6 +130,27 @@ div.tooltip {
       	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
       	.call(xAxis);
 
+
+      var path = g.selectAll(".line")
+        		.data([data])
+            .enter()
+            .append("path")
+        		.attr("class", "line")
+        		.attr("d", line)
+            .attr("stroke", "dodgerblue")
+        		.attr("opacity", 1)
+            .attr("transform", "translate("+margin.left+","+margin.top+")");
+
+
+      var totalLength = path.node().getTotalLength();
+
+    path
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+        .duration(1000)
+        .attr("stroke-dashoffset", 0);
+
     function redrawAxis(){
 
       g.selectAll(".x-axis").call(xAxis_ordinal)
@@ -139,6 +166,8 @@ div.tooltip {
           .attr("y", function(d) { return y(d.y); })
           .attr("width", x_ordinal.bandwidth() -bar_offset)
           .attr("height", 0)
+          .attr("fill", "aliceblue")
+          .attr("stroke", "lightgrey")
           .transition()
           .attr("height", function(d) { return height - y(d.y); })
           .attr("transform", "translate("+margin.left+","+margin.top+")");
