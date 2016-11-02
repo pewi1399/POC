@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-3.3.7-dist/css/bootstrap.min.css" media="screen"> <!-- ordnar alignemnt av formulärfält bland annat -->
+<link rel="stylesheet" href="stylesheets/font-awesome-4.6.3/css/font-awesome.min.css"> <!-- ger symboler exempelvis plustecken-->
+	<style>
+div.ex1 {
+    width:500px;
+    margin: auto;
+}
+
+div.ex2 {
+    max-width:1200px;
+    margin: auto;
+    border: 3px solid #73AD21;
+}
+
+.tick > line {
+    stroke: black;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.axis--x path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+</style>
+  </head>
+
+  <body>
+
+<h3>
+</h3>
+    <!--	<script src="https://d3js.org/d3.v4.min.js"></script> -->
+    <script src="src/d3/d3.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>-->
+    <script src="src/jquery-3.1.1.min.js"></script>
+
+    <script type="text/javascript">
+    	// --------------------------- start definitions --------------------------
+    	var margin = {top: 20, right: 100, bottom: 30, left: 100},
+    		width = 1130 - margin.left - margin.right,
+    		height = 550 - margin.top - margin.bottom,
+        bar_offset = 40;
+
+      var data = [
+                  {x:0, y:0, z:"0abc"},
+                  {x:10, y:10, z:"10abc"},
+                  {x:20, y:20, z:"20abc"},
+                  {x:30, y:30, z:"30abc"},
+                  {x:100, y:100, z:"100abc"}
+                ]
+
+
+      // set the ranges
+      var x = d3.scaleLinear().range([0, width]);
+      var x_ordinal = d3.scaleBand().range([width,0], .1);
+      var y = d3.scaleLinear().range([height, 0]);
+
+      x.domain(d3.extent(data, function(d) { return d.x; }));
+      x_ordinal.domain(data.map(function(d) { return d.z; }).reverse());
+      y.domain(d3.extent(data, function(d) { return d.y; }));
+
+    	var color = d3.scaleOrdinal()
+    		.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    	var yAxis = d3.axisLeft()
+    		.scale(y);
+
+    	var xAxis = d3.axisBottom()
+    		.scale(x);
+
+      var xAxis_ordinal = d3.axisBottom()
+          .scale(x_ordinal);
+
+      var svg = d3.select("h3")
+    		.append("div")
+    		.attr("id","testname")
+    		.classed("svg-container1", true)
+    		.append("svg")
+    		.attr("preserveAspectRatio", "xMinYMin meet")
+    		.attr("viewBox","0 0 " + (width + margin.left + margin.right)  + " " + (height+ margin.top + margin.bottom))
+    		//class to make it responsive
+    		.classed("svg-content-responsive", true);
+
+
+      var g = svg.append("g");
+
+      g.append("g")
+        .attr("class", "y-axis")
+        .attr('transform', 'translate(' + [margin.left, margin.top] + ')')
+        .call(yAxis);
+
+      g.append("g")
+      	.attr("class", "x-axis")
+      	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
+      	.call(xAxis);
+
+    function redrawAxis(){
+
+      g.selectAll(".x-axis").call(xAxis_ordinal)
+
+        //place filter data and set width using child array
+      	var bars = g.selectAll(".bars")
+      	  .data(data)
+      	  .enter()
+      	  //.append("g")
+      	  .append("rect")
+      	  .attr("class", "bars")
+          .attr("x", function(d) { return x_ordinal(d.z) + bar_offset/2; })
+          .attr("y", function(d) { return y(d.y); })
+          .attr("width", x_ordinal.bandwidth() -bar_offset)
+          .attr("height", 0)
+          .transition()
+          .attr("height", function(d) { return height - y(d.y); })
+          .attr("transform", "translate("+margin.left+","+margin.top+")");
+
+
+          /*
+      	  .attr("width", x_ordinal.step() - 10 ) //set width of each piece here
+      	  .attr("height", function(d){ return y(d.y) - height;})
+      	  //.attr("width",function(d){return x(d.y1) - x(d.y0);}) //set width of each piece here
+      	  //.attr("height", y.step())
+      	  .attr("x", function(d){return x_ordinal(d.z);}) // set starting point of each piece along x.axis
+          .attr("transform", "translate("+margin.left+","+margin.top+")")
+          */
+
+
+          /*.attr("stroke", "white")
+      	  .style("fill", function(d){
+      		if(d.index == 0){
+      		  return "dodgerblue";
+      		} else {
+      		  return "lightgrey";
+      		}});
+          */
+
+      /*
+      g.selectAll(".x-axis").remove()
+
+      g.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
+        .call(xAxis_ordinal);
+
+        */
+    }
+
+
+
+      g.selectAll(".circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", "circle")
+          .attr("r", 3)
+          .attr("cx", function(d){ return  x(d.x); })
+          .attr("cy", function(d){return y(d.y); })
+          .attr("transform", "translate("+margin.left+","+margin.top+")")
+
+  </script>
+  </body>

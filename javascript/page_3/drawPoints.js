@@ -2,7 +2,7 @@ window.onload = function() { init() };
 
 	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1LuGsCVaxAx62ZsWQXozajymGdf_F5XSJR59YgOFrmSE/pubhtml';
 	d3.select("h3").attr("align","center");
-	  
+
 	  function init() {
 		Tabletop.init( { key: public_spreadsheet_url,
 						 callback: showInfo,
@@ -15,7 +15,7 @@ function showInfo(data, tabletop) {
 			width = 960 - margin.left - margin.right,
 			height = 550- margin.top - margin.bottom;
 
-	
+
 var svg = d3.select("h3")
 			.append("div")
 			.attr("id","testname")
@@ -28,7 +28,7 @@ var svg = d3.select("h3")
 			//class to make it responsive
 			.classed("svg-content-responsive", true)
 		  .append("g");
-		  
+
 
 
 var formatValue = d3.format(",d");
@@ -40,12 +40,12 @@ var x = d3.scaleLinear()
 //var x = d3.scaleLog()
 var y = d3.scaleLinear()
     .range([height, 0]);
-	
-//  define line drawing function	
+
+//  define line drawing function
 var line = d3.line()
     .x(function(d) { return x(Number(d.X1)); })
     .y(function(d) { return y(Number(d.Y1)); });
-    
+
 var g = svg.append("g");
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -54,8 +54,8 @@ var g = svg.append("g");
 
   x.domain([0,600]);
   y.domain([0, 500]);
-  
-  
+
+
     g.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + (height/1.5) + ")")
@@ -84,10 +84,9 @@ var g = svg.append("g");
       .attr("cy", function(d) { return y(Number(d.Y1)); })
       .attr("fill", "fuchsia");
 
-      
+
       //clue
 //g.append("circle").attr("r", 10).attr("fill", "green").attr("cx", 100).attr("cy", 50)
 
 
-		};	
-
+		};
