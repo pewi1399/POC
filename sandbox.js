@@ -115,16 +115,7 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
     .enter()
     .append("g")
     .attr("class", "mouse-per-line")
-		.attr("name", function(d){ return d.index; });
-
-  // append circles for mouseover
-  mousePerLine.append("circle")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .attr("r", 7)
-    .attr("stroke", function(d){ return d.color;})
-    .style("fill", "none")
-    .style("stroke-width", "1px")
-    .style("opacity", "0")
+		.attr("name", function(d){ return d.index; })
 		.on("mouseover", function(d) {
 
 		div.transition()
@@ -139,6 +130,15 @@ mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
 				.duration(500)
 				.style("opacity", 0);
 		});
+
+  // append circles for mouseover
+  mousePerLine.append("circle")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("r", 7)
+    .attr("stroke", function(d){ return d.color;})
+    .style("fill", "none")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
 
   // add text text overlay
   mousePerLine.append("text")

@@ -13,7 +13,6 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
 var g = svg.append("g")
   	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 // parse the date / time
 var parseTime = d3.timeParse("%Y");
 
@@ -25,6 +24,20 @@ data.forEach(function(d) {
 // set the ranges
 var x = d3.scaleTime().range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
+
+// gridlines in y axis function
+function make_y_gridlines() {
+    return d3.axisLeft(y)
+        .ticks(5)
+}
+
+// add the Y gridlines
+g.append("g")
+    .attr("class", "grid")
+    .call(make_y_gridlines()
+        .tickSize(-width)
+        .tickFormat("")
+    )
 
 // define the line
 var line = d3.line()
@@ -40,8 +53,13 @@ y.domain([0, d3.max(data, function(d) { return d.y; })]);
 g.append("g")
     .call(d3.axisLeft(y)
             .ticks(5, "s")
-            .tickSizeInner(-width)
-          );
+            //.tickSizeInner(-width)
+          )
+          .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.4em")
+          //  .attr("dy", ".15em")
+          //  .attr("transform", "rotate(-65)" );;
 // Add the X Axis
 g.append("g")
   .attr("transform", "translate(0," + height + ")")
