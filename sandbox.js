@@ -12,6 +12,10 @@ function drawFun_tmp(nyckel, segment, kund, color, drawerIndex){
 			d.y = d[kund + segment]
 	});
 */
+	if(segment == "Total"){
+		var	segment = ""
+	}
+
 window.tmp_kund = kund
 window.tmp_segment = segment
   var cities = [nyckel].map(function(name) {

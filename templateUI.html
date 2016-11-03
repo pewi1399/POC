@@ -161,6 +161,7 @@ function get_primary_lineset(){
               <option> Hog </option>
         			<option> Medel </option>
               <option> Lag </option>
+              <option> Total </option>
               <option> Kvinna </option>
               <option> Man </option>
             </select>
@@ -201,6 +202,7 @@ function get_primary_lineset(){
 			<option> Hog </option>
 			<option> Medel </option>
       <option> Lag </option>
+      <option> Total </option>
       <option> Kvinna </option>
       <option> Man </option>
 			</select>
@@ -383,7 +385,7 @@ $(document).ready(function() {
 
         $(".downloadButton").on('click', function(){
 
-          JSONToCSVConvertor(d3.selectAll(".line").data(), "download", "date")
+          JSONToCSVConvertor(data, "download", "date")
 
         }
       )
