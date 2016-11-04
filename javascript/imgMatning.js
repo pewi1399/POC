@@ -224,3 +224,5 @@ function showInfo(data, tabletop) {
 	window.data = data
   console.log("ready")
 };
+
+//window.data = dataJSON

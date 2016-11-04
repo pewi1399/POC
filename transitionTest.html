@@ -65,28 +65,42 @@ div.tooltip {
     <script src="src/jquery-3.1.1.min.js"></script>
 
     <script type="text/javascript">
-    	// --------------------------- start definitions --------------------------
+
+    var dataset = [{"name":"Kannedom om CSN","color":"rgb(51, 240, 127)","index":0,"values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":60},{"x":"2013-12-31T23:00:00.000Z","y":57},{"x":"2014-12-31T23:00:00.000Z","y":60}]},{"name":"Fortroende for Arbetsformedlingen","color":"rgb(109, 66, 173)","index":"1","values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":8},{"x":"2013-12-31T23:00:00.000Z","y":8},{"x":"2014-12-31T23:00:00.000Z","y":12}]},{"name":"Kannedom om CSN","color":"rgb(73, 115, 221)","index":"2","values":[{"x":"2009-12-31T23:00:00.000Z","y":66},{"x":"2010-12-31T23:00:00.000Z","y":60},{"x":"2011-12-31T23:00:00.000Z","y":61},{"x":"2012-12-31T23:00:00.000Z","y":65},{"x":"2013-12-31T23:00:00.000Z","y":64},{"x":"2014-12-31T23:00:00.000Z","y":63}]}]
+
+    dataset.map(function(d) { return d.values; }).map(function(d){return d.forEach(function(d){d.x = d.x.substr(0,4)})})
+
+      // --------------------------- start definitions --------------------------
     	var margin = {top: 20, right: 100, bottom: 30, left: 100},
     		width = 1130 - margin.left - margin.right,
     		height = 550 - margin.top - margin.bottom,
         bar_offset = 40;
 
+
+
+
       var data = [
-                  {x:0, y:0, z:"0abc"},
-                  {x:10, y:10, z:"10abc"},
-                  {x:20, y:20, z:"20abc"},
-                  {x:30, y:30, z:"30abc"},
-                  {x:100, y:100, z:"100abc"}
+                  {x:0, y:0, z:"2009"},
+                  {x:5, y:3, z:"2010"},
+                  {x:10, y:10, z:"2011"},
+                  {x:20, y:20, z:"2012"},
+                  {x:30, y:30, z:"2013"},
+                  {x:100, y:100, z:"2014"},
+                  {x:105, y:100, z:"2015"}
                 ]
 
 
-      // set the ranges
-      var x = d3.scaleLinear().range([0, width]);
-      var x_ordinal = d3.scaleBand().range([width,0], .1);
+      // set scales and ranges
+      var x0 = d3.scaleBand().range([width,0], .1);
+      var x1 = d3.scaleBand();
       var y = d3.scaleLinear().range([height, 0]);
 
-      x.domain(d3.extent(data, function(d) { return d.x; }));
-      x_ordinal.domain(data.map(function(d) { return d.z; }).reverse());
+      // define subgroups
+      var lineGroups = dataset.map(function(d){ return d.index})
+
+      // define domain
+      x0.domain(data.map(function(d) { return d.z; }).reverse());
+      x1.domain(lineGroups).range([0, x0.bandwidth()]);
       y.domain(d3.extent(data, function(d) { return d.y; }));
 
     	var color = d3.scaleOrdinal()
@@ -96,16 +110,21 @@ div.tooltip {
     		.scale(y);
 
     	var xAxis = d3.axisBottom()
-    		.scale(x);
+    		.scale(x0);
 
       var xAxis_ordinal = d3.axisBottom()
-          .scale(x_ordinal);
+          .scale(x0);
 
       // define the line
       var line = d3.line()
           .curve(d3.curveBasis)
-          .x(function(d) { return x(d.x); })
+          .x(function(d) { return x0(d.z); })
           .y(function(d) { return y(d.y); });
+
+      var line_ordinal = d3.line()
+            .curve(d3.curveBasis)
+            .x(function(d) { return x0(d.x); })
+            .y(function(d) { return y(d.y); });
 
       var svg = d3.select("h3")
     		.append("div")
@@ -128,7 +147,7 @@ div.tooltip {
       g.append("g")
       	.attr("class", "x-axis")
       	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
-      	.call(xAxis);
+      	.call(xAxis_ordinal);
 
 
       var path = g.selectAll(".line")
@@ -139,7 +158,7 @@ div.tooltip {
         		.attr("d", line)
             .attr("stroke", "dodgerblue")
         		.attr("opacity", 1)
-            .attr("transform", "translate("+margin.left+","+margin.top+")");
+            .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
 
 
       var totalLength = path.node().getTotalLength();
@@ -151,34 +170,88 @@ div.tooltip {
         .duration(1000)
         .attr("stroke-dashoffset", 0);
 
+
+
+      var groups = g.selectAll(".lines")
+              .data(dataset)
+              .enter()
+              .append("path")
+              .attr("class", "line")
+              .attr("d", function(d){
+                return line_ordinal(d.values);
+              })
+              .attr("stroke", "dodgerblue")
+              .attr("opacity", 1)
+              .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
+
+
+      var dotHolder = g.selectAll("dotholder")
+              .data(dataset)
+              .enter()
+              .append("g")
+
+      var circles = dotHolder.selectAll("circles")
+        .data(function(d){return d.values;})
+        .enter()
+        .append('circle')
+        .attr("class", "circles")
+        .attr("r", 3)
+        .attr("cx", function(d){
+          return  x0(d.x);
+        })
+        .attr("cy", function(d){
+          return y(d.y);
+        })
+        .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2)+","+margin.top+")")
+
     function redrawAxis(){
 
-      g.selectAll(".x-axis").call(xAxis_ordinal)
+
+      var year = svg.selectAll(".year")
+          .data(dataset)
+          .enter().append("g")
+          .attr("class", "year")
+          .attr("transform", function(d) { return "translate(" + x0(d.index) + ",0)"; });
+
+          year.selectAll("rect")
+            .data(function(d) { return d.values; })
+            .enter().append("rect")
+            .attr("width", x1.bandwidth())
+            .attr("x", function(d) { return x1(d.x); })
+            .attr("y", function(d) { return y(d.y); })
+            .attr("height", function(d) { return height - y(d.y); })
+            //.style("fill", function(d) { return color(d.name); });
+
+
+
+
 
         //place filter data and set width using child array
-      	var bars = g.selectAll(".bars")
-      	  .data(data)
-      	  .enter()
-      	  //.append("g")
+
+        /*
+      	var bars = dotHolder.selectAll("bars")
+          .data(function(d){return d.values;})
+          .enter()
       	  .append("rect")
       	  .attr("class", "bars")
-          .attr("x", function(d) { return x_ordinal(d.z) + bar_offset/2; })
+          .attr("x", function(d) {
+            return x0(d.x) + bar_offset/2;
+          })
           .attr("y", function(d) { return y(d.y); })
-          .attr("width", x_ordinal.bandwidth() -bar_offset)
+          .attr("width", x0.bandwidth() -bar_offset)
           .attr("height", 0)
           .attr("fill", "aliceblue")
           .attr("stroke", "lightgrey")
           .transition()
           .attr("height", function(d) { return height - y(d.y); })
           .attr("transform", "translate("+margin.left+","+margin.top+")");
-
-
+*/
           /*
-      	  .attr("width", x_ordinal.step() - 10 ) //set width of each piece here
+      	  .attr("width", x0.step() - 10 ) //set width of each piece here
       	  .attr("height", function(d){ return y(d.y) - height;})
       	  //.attr("width",function(d){return x(d.y1) - x(d.y0);}) //set width of each piece here
       	  //.attr("height", y.step())
-      	  .attr("x", function(d){return x_ordinal(d.z);}) // set starting point of each piece along x.axis
+      	  .attr("x", function(d){return x0(d.z);}) // set starting point of each piece along x.axis
           .attr("transform", "translate("+margin.left+","+margin.top+")")
           */
 
@@ -204,16 +277,15 @@ div.tooltip {
     }
 
 
-
       g.selectAll(".circle")
           .data(data)
           .enter()
           .append("circle")
           .attr("class", "circle")
           .attr("r", 3)
-          .attr("cx", function(d){ return  x(d.x); })
+          .attr("cx", function(d){ return  x0(d.z); })
           .attr("cy", function(d){return y(d.y); })
-          .attr("transform", "translate("+margin.left+","+margin.top+")")
+          .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
 
   </script>
   </body>
