@@ -211,13 +211,13 @@ div.tooltip {
           .data(dataset)
           .enter().append("g")
           .attr("class", "year")
-          .attr("transform", function(d) { return "translate(" + x0(d.index) + ",0)"; });
+          .attr("transform", function(d) { return "translate(" + x1(d.index) + ",0)"; });
 
           year.selectAll("rect")
             .data(function(d) { return d.values; })
             .enter().append("rect")
             .attr("width", x1.bandwidth())
-            .attr("x", function(d) { return x1(d.x); })
+            .attr("x", function(d) { return x0(d.x); })
             .attr("y", function(d) { return y(d.y); })
             .attr("height", function(d) { return height - y(d.y); })
             //.style("fill", function(d) { return color(d.name); });

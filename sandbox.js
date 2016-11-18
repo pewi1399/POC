@@ -27,6 +27,7 @@ window.tmp_segment = segment
 			index: drawerIndex,
       values: dat.map(function(d) {
         return {
+//					id: d.name,
           x: parseTime(d.Ar),
           y: +d[tmp_kund+tmp_segment]
         };
