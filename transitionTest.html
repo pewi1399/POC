@@ -66,17 +66,27 @@ div.tooltip {
 
     <script type="text/javascript">
 
-    var dataset = [{"name":"Kannedom om CSN","color":"rgb(51, 240, 127)","index":0,"values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":60},{"x":"2013-12-31T23:00:00.000Z","y":57},{"x":"2014-12-31T23:00:00.000Z","y":60}]},{"name":"Fortroende for Arbetsformedlingen","color":"rgb(109, 66, 173)","index":"1","values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":8},{"x":"2013-12-31T23:00:00.000Z","y":8},{"x":"2014-12-31T23:00:00.000Z","y":12}]},{"name":"Kannedom om CSN","color":"rgb(73, 115, 221)","index":"2","values":[{"x":"2009-12-31T23:00:00.000Z","y":66},{"x":"2010-12-31T23:00:00.000Z","y":60},{"x":"2011-12-31T23:00:00.000Z","y":61},{"x":"2012-12-31T23:00:00.000Z","y":65},{"x":"2013-12-31T23:00:00.000Z","y":64},{"x":"2014-12-31T23:00:00.000Z","y":63}]}]
+    var dataset = [{"name":"Kannedom om CSN","color":"rgb(51, 240, 127)","index":0,"values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":60},{"x":"2013-12-31T23:00:00.000Z","y":57},{"x":"2014-12-31T23:00:00.000Z","y":60}]},{"name":"Fortroende for Arbetsformedlingen","color":"rgb(109, 66, 173)","index":"1","values":[{"x":"2009-12-31T23:00:00.000Z","y":0},{"x":"2010-12-31T23:00:00.000Z","y":0},{"x":"2011-12-31T23:00:00.000Z","y":0},{"x":"2012-12-31T23:00:00.000Z","y":8},{"x":"2013-12-31T23:00:00.000Z","y":8},{"x":"2014-12-31T23:00:00.000Z","y":12}]},{"name":"Kannedom om NSA","color":"rgb(73, 115, 221)","index":"2","values":[{"x":"2009-12-31T23:00:00.000Z","y":66},{"x":"2010-12-31T23:00:00.000Z","y":60},{"x":"2011-12-31T23:00:00.000Z","y":61},{"x":"2012-12-31T23:00:00.000Z","y":65},{"x":"2013-12-31T23:00:00.000Z","y":64},{"x":"2014-12-31T23:00:00.000Z","y":63}]}]
 
-    dataset.map(function(d) { return d.values; }).map(function(d){return d.forEach(function(d){d.x = d.x.substr(0,4)})})
+    dataset.map(function(d) { return d.values; }).map(function(d){return d.forEach(function(d){d.x = d.x.substr(0,4), d.test = 1})})
+
+    //push
+    for(i = 0; i < dataset.length; i++){
+      var name = dataset[i].name
+      for(j = 0; j < dataset[i].values.length; j++){
+          dataset[i].values[j].name = name;
+      };
+    };
+
+    var color = d3.scaleOrdinal().range(["#1f77b4","#ff7f0e","#2ca02c"]).domain(dataset.map(function(d){ return d.name}))
+
 
       // --------------------------- start definitions --------------------------
     	var margin = {top: 20, right: 100, bottom: 30, left: 100},
     		width = 1130 - margin.left - margin.right,
     		height = 550 - margin.top - margin.bottom,
-        bar_offset = 40;
-
-
+        bar_offset = 40.
+        group_spacing = 10;
 
 
       var data = [
@@ -85,8 +95,7 @@ div.tooltip {
                   {x:10, y:10, z:"2011"},
                   {x:20, y:20, z:"2012"},
                   {x:30, y:30, z:"2013"},
-                  {x:100, y:100, z:"2014"},
-                  {x:105, y:100, z:"2015"}
+                  {x:100, y:100, z:"2014"}
                 ]
 
 
@@ -100,7 +109,7 @@ div.tooltip {
 
       // define domain
       x0.domain(data.map(function(d) { return d.z; }).reverse());
-      x1.domain(lineGroups).range([0, x0.bandwidth()]);
+      x1.domain(lineGroups).range([group_spacing, x0.bandwidth()-group_spacing]);
       y.domain(d3.extent(data, function(d) { return d.y; }));
 
     	var color = d3.scaleOrdinal()
@@ -149,7 +158,7 @@ div.tooltip {
       	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
       	.call(xAxis_ordinal);
 
-
+/* animate line
       var path = g.selectAll(".line")
         		.data([data])
             .enter()
@@ -170,7 +179,7 @@ div.tooltip {
         .duration(1000)
         .attr("stroke-dashoffset", 0);
 
-
+*/
 
       var groups = g.selectAll(".lines")
               .data(dataset)
@@ -211,7 +220,7 @@ div.tooltip {
           .data(dataset)
           .enter().append("g")
           .attr("class", "year")
-          .attr("transform", function(d) { return "translate(" + x1(d.index) + ",0)"; });
+          .attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
 
           year.selectAll("rect")
             .data(function(d) { return d.values; })
@@ -219,64 +228,47 @@ div.tooltip {
             .attr("width", x1.bandwidth())
             .attr("x", function(d) { return x0(d.x); })
             .attr("y", function(d) { return y(d.y); })
+            .attr("fill", function(d){ return color(d.name);})
             .attr("height", function(d) { return height - y(d.y); })
+            .attr("transform", "translate("+ [margin.left, margin.top] + ")")
             //.style("fill", function(d) { return color(d.name); });
-
-
-
-
-
-        //place filter data and set width using child array
-
-        /*
-      	var bars = dotHolder.selectAll("bars")
-          .data(function(d){return d.values;})
-          .enter()
-      	  .append("rect")
-      	  .attr("class", "bars")
-          .attr("x", function(d) {
-            return x0(d.x) + bar_offset/2;
-          })
-          .attr("y", function(d) { return y(d.y); })
-          .attr("width", x0.bandwidth() -bar_offset)
-          .attr("height", 0)
-          .attr("fill", "aliceblue")
-          .attr("stroke", "lightgrey")
-          .transition()
-          .attr("height", function(d) { return height - y(d.y); })
-          .attr("transform", "translate("+margin.left+","+margin.top+")");
-*/
-          /*
-      	  .attr("width", x0.step() - 10 ) //set width of each piece here
-      	  .attr("height", function(d){ return y(d.y) - height;})
-      	  //.attr("width",function(d){return x(d.y1) - x(d.y0);}) //set width of each piece here
-      	  //.attr("height", y.step())
-      	  .attr("x", function(d){return x0(d.z);}) // set starting point of each piece along x.axis
-          .attr("transform", "translate("+margin.left+","+margin.top+")")
-          */
-
-
-          /*.attr("stroke", "white")
-      	  .style("fill", function(d){
-      		if(d.index == 0){
-      		  return "dodgerblue";
-      		} else {
-      		  return "lightgrey";
-      		}});
-          */
-
-      /*
-      g.selectAll(".x-axis").remove()
-
-      g.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
-        .call(xAxis_ordinal);
-
-        */
     }
 
+function updateBlocks(){
 
+
+
+      d3.selectAll("rect")
+        .transition()
+        .duration(2500)
+        .attr("width", 0);
+
+
+      d3.selectAll("rect").remove();
+
+
+      var dataset = dataset.filter(function(d) { return d.name != "Kannedom om CSN"})
+
+        var lineGroups = dataset.map(function(d){ return d.index})
+        x1.domain(lineGroups).range([group_spacing, x0.bandwidth()-group_spacing]);
+
+        var year = svg.selectAll(".year")
+            .data(dataset)
+            .enter().append("g")
+            .attr("class", "year")
+            .attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+
+        year.selectAll("rect")
+          .data(function(d) { return d.values; })
+          .enter().append("rect")
+          .attr("width", x1.bandwidth())
+          .attr("x", function(d) { return x0(d.x); })
+          .attr("y", function(d) { return y(d.y); })
+          .attr("fill", function(d){ return color(d.name);})
+          .attr("height", function(d) { return height - y(d.y); })
+          .attr("transform", "translate("+ [margin.left, margin.top] + ")")
+}
+/*extra dots
       g.selectAll(".circle")
           .data(data)
           .enter()
@@ -286,6 +278,6 @@ div.tooltip {
           .attr("cx", function(d){ return  x0(d.z); })
           .attr("cy", function(d){return y(d.y); })
           .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
-
+*/
   </script>
   </body>
