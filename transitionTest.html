@@ -116,7 +116,8 @@ div.tooltip {
     		.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
     	var yAxis = d3.axisLeft()
-    		.scale(y);
+    		.scale(y)
+        .ticks(5);
 
     	var xAxis = d3.axisBottom()
     		.scale(x0);
@@ -158,6 +159,21 @@ div.tooltip {
       	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
       	.call(xAxis_ordinal);
 
+        // gridlines in y axis function
+        function make_y_gridlines() {
+            return d3.axisLeft(y)
+                .ticks(5)
+        }
+
+        // add the Y gridlines
+        g.append("g")
+            .attr("class", "grid")
+            .attr('transform', 'translate(' + [margin.left, margin.top] + ')')
+            .call(make_y_gridlines()
+                .tickSize(-width)
+                .tickFormat("")
+            )
+
 /* animate line
       var path = g.selectAll(".line")
         		.data([data])
@@ -180,7 +196,7 @@ div.tooltip {
         .attr("stroke-dashoffset", 0);
 
 */
-
+/*
       var groups = g.selectAll(".lines")
               .data(dataset)
               .enter()
@@ -212,61 +228,86 @@ div.tooltip {
           return y(d.y);
         })
         .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2)+","+margin.top+")")
+*/
+
+var year = svg.selectAll(".year")
+    .data([1])
+    .enter().append("g")
+    .attr("class", "year");
+
 
     function redrawAxis(){
 
 
-      var year = svg.selectAll(".year")
-          .data(dataset)
-          .enter().append("g")
-          .attr("class", "year")
-          .attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+      var set = ["Kannedom om CSN", "Fortroende for Arbetsformedlingen", "Kannedom om NSA"]
+      var set_index = Math.floor(Math.random() * (set.length+1))
 
-          year.selectAll("rect")
-            .data(function(d) { return d.values; })
-            .enter().append("rect")
-            .attr("width", x1.bandwidth())
-            .attr("x", function(d) { return x0(d.x); })
-            .attr("y", function(d) { return y(d.y); })
-            .attr("fill", function(d){ return color(d.name);})
-            .attr("height", function(d) { return height - y(d.y); })
-            .attr("transform", "translate("+ [margin.left, margin.top] + ")")
-            //.style("fill", function(d) { return color(d.name); });
-    }
+      //svg.selectAll(".year").remove();
 
-function updateBlocks(){
+      //var dataset = window.dataset.filter(function(d) { return d.name != "Kannedom om CSN"})
+      //var dataset = window.dataset.filter(function(d,i){return i != set_index})
+      var dataset = window.dataset
 
-
-
-      d3.selectAll("rect")
-        .transition()
-        .duration(2500)
-        .attr("width", 0);
-
-
-      d3.selectAll("rect").remove();
-
-
-      var dataset = dataset.filter(function(d) { return d.name != "Kannedom om CSN"})
 
         var lineGroups = dataset.map(function(d){ return d.index})
         x1.domain(lineGroups).range([group_spacing, x0.bandwidth()-group_spacing]);
 
+        //Notera att ordningen är allt som betyder något vid en JOIN
+        //alltså med ett element i sleection innan och två efter
+        // kommer en att ligga i huvud selection och en i "enter()"
+        // likaså om data har färre punkter än selection kommer överflödiga att hamna i "exit"
+
+        //JOIN
         var year = svg.selectAll(".year")
             .data(dataset)
-            .enter().append("g")
-            .attr("class", "year")
-            .attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
 
-        year.selectAll("rect")
+        // EXIT old elements not present in new data.
+        year.exit()
+            .attr("class", "exit")
+          .transition()
+            .attr("y", 60)
+            .style("fill-opacity", 1e-6)
+            .remove();
+
+        //Update old elements
+        year.attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+
+        //Set attributes for new elements
+        year.enter().append("g")
+          .attr("class", "year")
+          .attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+
+        var years = year.enter().merge(year)
+
+
+        years.selectAll(".rect")
           .data(function(d) { return d.values; })
           .enter().append("rect")
-          .attr("width", x1.bandwidth())
+          .attr("width", 0)
           .attr("x", function(d) { return x0(d.x); })
           .attr("y", function(d) { return y(d.y); })
           .attr("fill", function(d){ return color(d.name);})
           .attr("height", function(d) { return height - y(d.y); })
           .attr("transform", "translate("+ [margin.left, margin.top] + ")")
+          .transition()
+          .duration(2500)
+          .attr("width", x1.bandwidth());
+            //.style("fill", function(d) { return color(d.name); });
+    }
+
+function updateBlocks(){
+
+      d3.selectAll("rect")
+        .transition()
+        .duration(2500)
+        .attr("width", 0)
+        .on("end", function(){redrawAxis();});
+
+
+      //d3.selectAll(".year")
+      //.transition()
+      //.duration(2500)
+      //.each("end", function(){ console.log(111)});
 }
 /*extra dots
       g.selectAll(".circle")
