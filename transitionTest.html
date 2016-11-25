@@ -73,8 +73,10 @@ div.tooltip {
     //push
     for(i = 0; i < dataset.length; i++){
       var name = dataset[i].name
+      var index = dataset[i].index
       for(j = 0; j < dataset[i].values.length; j++){
           dataset[i].values[j].name = name;
+          dataset[i].values[j].index = index;
       };
     };
 
@@ -174,69 +176,13 @@ div.tooltip {
                 .tickFormat("")
             )
 
-/* animate line
-      var path = g.selectAll(".line")
-        		.data([data])
-            .enter()
-            .append("path")
-        		.attr("class", "line")
-        		.attr("d", line)
-            .attr("stroke", "dodgerblue")
-        		.attr("opacity", 1)
-            .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
+      var year = svg.selectAll(".year")
+          .data([1])
+          .enter().append("g")
+          .attr("class", "year");
 
 
-      var totalLength = path.node().getTotalLength();
-
-    path
-      .attr("stroke-dasharray", totalLength + " " + totalLength)
-      .attr("stroke-dashoffset", totalLength)
-      .transition()
-        .duration(1000)
-        .attr("stroke-dashoffset", 0);
-
-*/
-/*
-      var groups = g.selectAll(".lines")
-              .data(dataset)
-              .enter()
-              .append("path")
-              .attr("class", "line")
-              .attr("d", function(d){
-                return line_ordinal(d.values);
-              })
-              .attr("stroke", "dodgerblue")
-              .attr("opacity", 1)
-              .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
-
-
-      var dotHolder = g.selectAll("dotholder")
-              .data(dataset)
-              .enter()
-              .append("g")
-
-      var circles = dotHolder.selectAll("circles")
-        .data(function(d){return d.values;})
-        .enter()
-        .append('circle')
-        .attr("class", "circles")
-        .attr("r", 3)
-        .attr("cx", function(d){
-          return  x0(d.x);
-        })
-        .attr("cy", function(d){
-          return y(d.y);
-        })
-        .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2)+","+margin.top+")")
-*/
-
-var year = svg.selectAll(".year")
-    .data([1])
-    .enter().append("g")
-    .attr("class", "year");
-
-
-    function redrawAxis(){
+    function redraw_axis(){
 
 
       var set = ["Kannedom om CSN", "Fortroende for Arbetsformedlingen", "Kannedom om NSA"]
@@ -279,19 +225,41 @@ var year = svg.selectAll(".year")
 
         var years = year.enter().merge(year)
 
+        window.years = years
+      };
+
+    function redraw_box(){
+
+        years.selectAll(".circles")
+          //.data(function(d) { return d.values; })
+          //.enter()
+          .append("circle")
+          .attr("class", "circles")
+          .attr("r", 11)
+          .attr("cx", 10)//function(d) { return x0(d.x); })
+          .attr("cy", 10)//function(d) { return y(d.y); })
+
+        //years.attr("transform", "translate("+ [margin.left, margin.top] + ")")
+        //years.attr("transform", "translate("+ [0, 0] + ")")
 
         years.selectAll(".rect")
           .data(function(d) { return d.values; })
           .enter().append("rect")
           .attr("width", 0)
-          .attr("x", function(d) { return x0(d.x); })
-          .attr("y", function(d) { return y(d.y); })
+          .attr("x", function(d) {
+            return x0(d.x);
+          })
+          .attr("y", function(d) {
+            return y(d.y);
+          })
           .attr("fill", function(d){ return color(d.name);})
           .attr("height", function(d) { return height - y(d.y); })
-          .attr("transform", "translate("+ [margin.left, margin.top] + ")")
           .transition()
           .duration(2500)
-          .attr("width", x1.bandwidth());
+          .attr("width", x1.bandwidth())
+          .attr("transform", function(d) {
+            return "translate(" + (x1(d.index)) + ",0)"; }
+          );
             //.style("fill", function(d) { return color(d.name); });
     }
 
