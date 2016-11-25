@@ -110,6 +110,39 @@ div.tooltip {
                   {id:"B", x:105, y:70, z:"2015"}
                 ]
 
+      var line_groups = d3.map(data1, function(d){ return d.id}).keys()
+      var group_spacing = 1
+
+
+      var aset = ["A"].map(function(name) {
+        // argumenten i listan in, kallade "name" används för att skapa namngiven array
+        // i steg ett sparas namn och en subarray
+        return {
+          group: name,
+          values: data1.filter(function(d){ return d.id == name}).map(function(d) {
+            return {
+              z: d.z,
+              y: d.y
+            };
+          })
+        };
+      });
+
+      var bset = ["B"].map(function(name) {
+        // argumenten i listan in, kallade "name" används för att skapa namngiven array
+        // i steg ett sparas namn och en subarray
+        return {
+          group: name,
+          values: data1.filter(function(d){ return d.id == name}).map(function(d) {
+            return {
+              z: d.z,
+              y: d.y
+            };
+          })
+        };
+      });
+
+      var dataframe = [aset[0], bset[0]]
 
 
       // set scales and ranges
@@ -119,7 +152,7 @@ div.tooltip {
 
       // define domain
       x0.domain(data.map(function(d) { return d.z; }).reverse());
-      //x1.domain(lineGroups).range([0, x0.bandwidth()]);
+      x1.domain(line_groups).range([group_spacing, x0.bandwidth()-group_spacing]);
       y.domain(d3.extent(data1, function(d) { return d.y; }));
 
     	var color = d3.scaleOrdinal()
@@ -137,10 +170,6 @@ div.tooltip {
           .x(function(d) { return x0(d.z); })
           .y(function(d) { return y(d.y); });
 
-      var line_ordinal = d3.line()
-            .curve(d3.curveBasis)
-            .x(function(d) { return x0(d.x); })
-            .y(function(d) { return y(d.y); });
 
       var svg = d3.select("h3")
     		.append("div")
@@ -164,7 +193,7 @@ div.tooltip {
       	.attr("class", "x-axis")
       	.attr("transform", "translate("+ [margin.left, height+ margin.top] + ")")
       	.call(xAxis_ordinal);
-
+/*
       var path = g.selectAll(".line")
         		.data([data])
             .enter()
@@ -183,14 +212,23 @@ div.tooltip {
       .transition()
         .duration(1000)
         .attr("stroke-dashoffset", 0);
+*/
+      var circleholder = g.selectAll(".circleholder")
+           .data(dataframe.filter(function(d){ return d.group == "A"}))
+           .enter().append("g")
+           .attr("class","circleholder")
+           .attr("id", function(d){ return d.group;})
 
-      g.selectAll(".circle")
-          .data(data)
-          .enter()
-          .append("circle")
+
+
+      circleholder .selectAll(".circle")
+          .data(function(d){ return d.values; })
+          .enter().append("circle")
           .attr("class", "circle")
           .attr("r", 3)
-          .attr("cx", function(d){ return  x0(d.z); })
+          .attr("cx", function(d){
+            return  x0(d.z);
+          })
           .attr("cy", function(d){return y(d.y); })
           .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
 
@@ -216,22 +254,23 @@ div.tooltip {
       .transition()
       .call(xAxis_ordinal);
 
-   var circles = g.selectAll(".circle")
-        .data(data1.filter(function(d){ return d.id == "A"}));
+   var circles = g.selectAll(".circleholder")
+        .selectAll(".circle")
+//        .data(data1.filter(function(d){ return d.id == "A"}));
 
-       circles.enter()
-        .append("circle")
-        .attr("class", "circle")
-        .attr("cy", function(d){return y(d.y); })
-      .merge(circles)
-        .transition()
+       circles//.enter()
+        //.append("circle")
+        //.attr("class", "circle")
+        //.attr("cy", function(d){return y(d.y); })
+      //.merge(circles)
+        //.transition()
         .attr("r", 5)
         .attr("fill", "red")
         .attr("cx", function(d){
           return  x0(d.z);
         })
         .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
-
+//*/
     var rects = g.selectAll("rect")
           .data(data1.filter(function(d){ return d.id == "A"}));
 
@@ -253,25 +292,64 @@ div.tooltip {
 
       //console.log(circles.enter().size());
 
-//window.x0 = x0
+window.x0 = x0
  }
 
 function split_test(){
 
-  var circles = g.selectAll(".circle")
-       .data(data1);
+  x1.domain(line_groups).range([group_spacing, x0.bandwidth()-group_spacing]);
+
+
+  var circles = g.selectAll(".circleholder")
+       .data(dataframe)
+
+  circles
+       .enter().append("g")
+       .attr("class","circleholder")
+       .attr("id", function(d){ return d.group;})
+       .selectAll(".circles")
+       .data(function(d){
+         return d.values;
+       })
+       .enter()
+       .append("circle")
+       .attr("r", 5)
+       .attr("fill", "green")
+       .attr("cx", function(d){
+         return  x0(d.z);
+       })
+       .attr("cy", function(d){return y(d.y); })
+       .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
+       //.merge(circles)
+       //.attr("name", "gg")
+
+  //circles
+  //  .attr("transform", function(d) { return "translate(" + (x1(d.group)) + ",0)"; });
+/*
+  var circles = g.selectAll(".")
+       .selectAll(".circle")
+       .data(data1)
+       //.append("g")
+       //.attr("id", "oldcontainer");
+
+       //attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+
 
       circles.enter()
        .append("circle")
        .attr("class", "circle")
-       .attr("cx", function(d){return (x0(d.z)-10); })
+       .attr("cx", function(d){return (x0(d.z)); })
        .attr("cy", function(d){return y(d.y); })
        .attr("r", 5)
        .attr("fill", "green")
        .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")")
       .merge(circles)
         .transition()
+        //.attr("cx", function(d){return (x0(d.z) + x1(d.id)); })
         .attr("r", 10)
+
+*/
+
 
 }
 
