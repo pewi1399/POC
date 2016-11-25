@@ -93,6 +93,23 @@ div.tooltip {
                   {x:105, y:100, z:"2015"}
                 ]
 
+      var data1 = [
+                  {id:"A", x:0, y:0, z:"2009"},
+                  {id:"A", x:5, y:3, z:"2010"},
+                  {id:"A", x:10, y:10, z:"2011"},
+                  {id:"A", x:20, y:20, z:"2012"},
+                  {id:"A", x:30, y:30, z:"2013"},
+                  {id:"A", x:100, y:100, z:"2014"},
+                  {id:"A", x:105, y:100, z:"2015"},
+                  {id:"B", x:0, y:10, z:"2009"},
+                  {id:"B", x:5, y:20, z:"2010"},
+                  {id:"B", x:10, y:30, z:"2011"},
+                  {id:"B", x:20, y:40, z:"2012"},
+                  {id:"B", x:30, y:50, z:"2013"},
+                  {id:"B", x:100, y:60, z:"2014"},
+                  {id:"B", x:105, y:70, z:"2015"}
+                ]
+
 
 
       // set scales and ranges
@@ -200,8 +217,7 @@ div.tooltip {
       .call(xAxis_ordinal);
 
    var circles = g.selectAll(".circle")
-       .data(data1);
-
+        .data(data1.filter(function(d){ return d.id == "A"}));
 
        circles.enter()
         .append("circle")
@@ -216,25 +232,49 @@ div.tooltip {
         })
         .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
 
-    var rects = d3.selectAll("rect")
-          .data(data1);
+    var rects = g.selectAll("rect")
+          .data(data1.filter(function(d){ return d.id == "A"}));
 
         rects.enter()
           .append("rect")
           .attr("class", "rect")
         .merge(rects)
-          //.transition()
+          .transition()
           .attr("width", x0.bandwidth()/2)
-          .attr("x", function(d) { return (x0(d.z) - x0.bandwidth()/4); })
-          .attr("y", function(d) { return y(d.y); })
+          .attr("x", function(d) {
+            return (x0(d.z) - x0.bandwidth()/4);
+          })
+          .attr("y", function(d) {
+            return y(d.y);
+          })
           .attr("height", function(d) { return height - y(d.y); })
           .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
           //.style("fill", function(d) { return color(d.name); });
 
-      console.log(circles.enter().size());
+      //console.log(circles.enter().size());
 
-window.tmp = x0
+//window.x0 = x0
  }
+
+function split_test(){
+
+  var circles = g.selectAll(".circle")
+       .data(data1);
+
+      circles.enter()
+       .append("circle")
+       .attr("class", "circle")
+       .attr("cx", function(d){return (x0(d.z)-10); })
+       .attr("cy", function(d){return y(d.y); })
+       .attr("r", 5)
+       .attr("fill", "green")
+       .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")")
+      .merge(circles)
+        .transition()
+        .attr("r", 10)
+
+}
+
 
 
   </script>
