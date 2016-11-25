@@ -111,7 +111,7 @@ div.tooltip {
                 ]
 
       var line_groups = d3.map(data1, function(d){ return d.id}).keys()
-      var group_spacing = 1
+      var group_spacing = 10
 
 
       var aset = ["A"].map(function(name) {
@@ -297,17 +297,33 @@ window.x0 = x0
 
 function split_test(){
 
+//Update x scale
   x1.domain(line_groups).range([group_spacing, x0.bandwidth()-group_spacing]);
+
+// calculate correction for circles
+// these should start in the middle of bars with same year and class designation
+var circle_offset = (x1.range()[1]-x1.range()[0])/(line_groups.length*2)
 
 
   var circles = g.selectAll(".circleholder")
        .data(dataframe)
 
   circles
+        .attr("transform", function(d) {
+          return "translate(" + (x1(d.group)) + ",0)";
+        });
+
+  circles.selectAll(".circle")
+        .attr("transform", "translate("+ (margin.left + circle_offset) +","+margin.top+")")
+
+  circles
        .enter().append("g")
        .attr("class","circleholder")
        .attr("id", function(d){ return d.group;})
-       .selectAll(".circles")
+       .attr("transform", function(d) {
+         return "translate(" + (x1(d.group)) + ",0)";
+       })
+       .selectAll(".circle")
        .data(function(d){
          return d.values;
        })
@@ -319,9 +335,8 @@ function split_test(){
          return  x0(d.z);
        })
        .attr("cy", function(d){return y(d.y); })
-       .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
-       //.merge(circles)
-       //.attr("name", "gg")
+       .merge(circles)
+       .attr("transform", "translate("+ (margin.left+ circle_offset) +","+margin.top+")");
 
   //circles
   //  .attr("transform", function(d) { return "translate(" + (x1(d.group)) + ",0)"; });
