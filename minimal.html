@@ -107,7 +107,14 @@ div.tooltip {
                   {id:"B", x:20, y:40, z:"2012"},
                   {id:"B", x:30, y:50, z:"2013"},
                   {id:"B", x:100, y:60, z:"2014"},
-                  {id:"B", x:105, y:70, z:"2015"}
+                  {id:"B", x:105, y:30, z:"2015"},
+                  {id:"C", x:0, y:56, z:"2009"},
+                  {id:"C", x:5, y:56, z:"2010"},
+                  {id:"C", x:10, y:30, z:"2011"},
+                  {id:"C", x:20, y:33, z:"2012"},
+                  {id:"C", x:30, y:44, z:"2013"},
+                  {id:"C", x:100, y:55, z:"2014"},
+                  {id:"C", x:105, y:11, z:"2015"}
                 ]
 
       var line_groups = d3.map(data1, function(d){ return d.id}).keys()
@@ -142,7 +149,21 @@ div.tooltip {
         };
       });
 
-      var dataframe = [aset[0], bset[0]]
+      var cset = ["C"].map(function(name) {
+        // argumenten i listan in, kallade "name" används för att skapa namngiven array
+        // i steg ett sparas namn och en subarray
+        return {
+          group: name,
+          values: data1.filter(function(d){ return d.id == name}).map(function(d) {
+            return {
+              z: d.z,
+              y: d.y
+            };
+          })
+        };
+      });
+
+      var dataframe = [aset[0], bset[0], cset[0]]
 
 
       // set scales and ranges
@@ -151,7 +172,7 @@ div.tooltip {
       var y = d3.scaleLinear().range([height, 0]);
 
       // define domain
-      x0.domain(data.map(function(d) { return d.z; }).reverse());
+      x0.domain(data1.map(function(d) { return d.z; }).reverse());
       x1.domain(line_groups).range([group_spacing, x0.bandwidth()-group_spacing]);
       y.domain(d3.extent(data1, function(d) { return d.y; }));
 
@@ -232,12 +253,20 @@ div.tooltip {
           .attr("cy", function(d){return y(d.y); })
           .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
 
-      g.selectAll("rect")
-        .data(data)
+
+    var barholder = g.selectAll(".barholder")
+         .data(dataframe.filter(function(d){ return d.group == "A"}))
+         .enter().append("g")
+         .attr("class","barholder")
+         .attr("id", function(d){ return "bar_" + d.group;})
+
+
+      barholder.selectAll(".rect")
+        .data(function(d){ return d.values; })
         .enter().append("rect")
         .attr("class", "rect")
-        .attr("width", x0.bandwidth()/2)
-        .attr("x", function(d) { return (x0(d.z) - x0.bandwidth()/4); })
+        .attr("width", x1.bandwidth())
+        .attr("x", function(d) { return (x0(d.z)); })
         .attr("y", function(d) { return y(d.y); })
         .attr("height", function(d) { return height - y(d.y); })
         .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
@@ -270,7 +299,8 @@ div.tooltip {
           return  x0(d.z);
         })
         .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")");
-//*/
+//
+/*
     var rects = g.selectAll("rect")
           .data(data1.filter(function(d){ return d.id == "A"}));
 
@@ -291,7 +321,7 @@ div.tooltip {
           //.style("fill", function(d) { return color(d.name); });
 
       //console.log(circles.enter().size());
-
+*/
 window.x0 = x0
  }
 
@@ -313,9 +343,12 @@ var circle_offset = (x1.range()[1]-x1.range()[0])/(line_groups.length*2)
           return "translate(" + (x1(d.group)) + ",0)";
         });
 
+  //Move the old elements
   circles.selectAll(".circle")
+        .transition()
         .attr("transform", "translate("+ (margin.left + circle_offset) +","+margin.top+")")
 
+// move the enter selection
   circles
        .enter().append("g")
        .attr("class","circleholder")
@@ -335,36 +368,51 @@ var circle_offset = (x1.range()[1]-x1.range()[0])/(line_groups.length*2)
          return  x0(d.z);
        })
        .attr("cy", function(d){return y(d.y); })
-       .merge(circles)
+       //.merge(circles) // merge and update position for all elements?? Merge not needed
        .attr("transform", "translate("+ (margin.left+ circle_offset) +","+margin.top+")");
 
-  //circles
-  //  .attr("transform", function(d) { return "translate(" + (x1(d.group)) + ",0)"; });
-/*
-  var circles = g.selectAll(".")
-       .selectAll(".circle")
-       .data(data1)
-       //.append("g")
-       //.attr("id", "oldcontainer");
+//Move rects
+       var rects = g.selectAll(".barholder")
+             .data(dataframe);
 
-       //attr("transform", function(d) { return "translate(" + (x1(d.index)) + ",0)"; });
+       rects
+             .attr("transform", function(d) {
+               return "translate(" + (x1(d.group)) + ",0)";
+             });
+
+       //Move the old elements
+       rects.selectAll(".rect")
+             .transition()
+             .attr("transform", "translate("+ (margin.left) +","+margin.top+")")
 
 
-      circles.enter()
-       .append("circle")
-       .attr("class", "circle")
-       .attr("cx", function(d){return (x0(d.z)); })
-       .attr("cy", function(d){return y(d.y); })
-       .attr("r", 5)
-       .attr("fill", "green")
-       .attr("transform", "translate("+ (margin.left + x0.bandwidth()/2) +","+margin.top+")")
-      .merge(circles)
-        .transition()
-        //.attr("cx", function(d){return (x0(d.z) + x1(d.id)); })
-        .attr("r", 10)
+        console.log(rects.enter().size())
 
-*/
-
+      rects
+           .enter().append("g")
+           .attr("class","barholder")
+           .attr("id", function(d){ return "bar" + d.group;})
+           .attr("transform", function(d) {
+              return "translate(" + (x1(d.group)) + ",0)";
+            })
+            .selectAll(".rect")
+            .data(function(d){
+              return d.values;
+            })
+            .enter().append("rect")
+           //.merge(rects)
+             .attr("width", 0)
+             .attr("fill", "dodgerblue")
+             .attr("x", function(d) {
+               return (x0(d.z));
+             })
+             .attr("y", function(d) {
+               return y(d.y);
+             })
+             .attr("height", function(d) { return height - y(d.y); })
+             .attr("transform", "translate("+ (margin.left) +","+margin.top+")")
+             .transition()
+             .attr("width", x1.bandwidth());
 
 }
 
